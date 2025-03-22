@@ -228,24 +228,53 @@ export default function TreatmentsPage() {
           <p className="text-muted-foreground">No treatments added yet.</p>
         ) : (
           treatments.map((treatment) => (
-            <Card key={treatment.id}>
-              <CardContent className="pt-6 flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-medium">{treatment.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {treatment.type === "pharmaceutical"
-                      ? "Medication"
-                      : "Lifestyle"}{" "}
-                    • {treatment.frequency} • For: {treatment.conditionName}
-                  </p>
+            <Card
+              key={treatment.id}
+              className="hover:shadow-md transition-shadow"
+            >
+              <CardContent className="pt-6">
+                <div className="flex justify-between items-center">
+                  <div
+                    className="flex-1 cursor-pointer"
+                    onClick={() => router.push(`/treatments/${treatment.id}`)}
+                  >
+                    <h3 className="text-lg font-medium">
+                      {treatment.name}
+                      {treatment.effectiveness && (
+                        <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                          Rated: {treatment.effectiveness}/10
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {treatment.type === "pharmaceutical"
+                        ? "Medication"
+                        : "Lifestyle"}{" "}
+                      • {treatment.frequency} • For: {treatment.conditionName}
+                    </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push(`/treatments/${treatment.id}`)}
+                    >
+                      Details
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteTreatment(treatment.id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => deleteTreatment(treatment.id)}
-                >
-                  Delete
-                </Button>
+                {!treatment.effectiveness && (
+                  <div className="text-xs text-muted-foreground mt-3 border-t pt-2 italic">
+                    Click to rate effectiveness and add treatment notes
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))
