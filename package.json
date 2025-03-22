@@ -24,6 +24,7 @@
     "tw-animate-css": "^1.2.4"
   },
   "devDependencies": {
+    "@firebase/analytics": "^0.10.12",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
