@@ -1,6 +1,6 @@
 # Holistic Health Tracker
 
-A comprehensive health treatment management application built during a 6-hour hackathon.
+A comprehensive health treatment management application built during Nuggethacks, a 6-hour internal hackathon!
 
 ## 🌟 Features
 
