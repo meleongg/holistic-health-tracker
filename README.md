@@ -1,6 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Holistic Health Tracker
 
-## Getting Started
+A comprehensive health treatment management application built during a 6-hour hackathon.
+
+## 🌟 Features
+
+- **Treatment Management**: Track pharmaceutical and lifestyle treatments for multiple health conditions
+- **Smart Recurrence**: Support for daily, weekly, and monthly treatment schedules
+- **Completion Tracking**: Mark treatments as complete and view completion history
+- **Condition Dashboard**: Organized view of treatments by medical condition
+- **Calendar Integration**: Visual date selection for viewing and tracking treatments
+- **Adaptive UI**: Treatments automatically appear based on their frequency schedule
+- **Test Data Generation**: Built-in system to create sample data for testing
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 14 with React and TypeScript
+- **UI Components**: Shadcn UI with Tailwind CSS
+- **Authentication**: Firebase Authentication
+- **Database**: Firebase Firestore
+- **Hosting**: Vercel
+
+## 🚀 Getting Started
 
 First, run the development server:
 
@@ -14,23 +34,20 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔜 Future Enhancements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Email Notifications**: Automated reminders for treatment adherence
+- **Weekly/Monthly Reports**: Summaries of treatment completion and effectiveness
+- **Settings Page**: User preferences for notifications and app behavior
+- **Analytics Dashboard**: Visual insights into treatment effectiveness
+- **Mobile App**: Native mobile experience using React Native
+- **Data Export**: Export health data to PDF or CSV format
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔄 Deployment
 
-## Learn More
+The app is configured for deployment on Vercel for the frontend and Firebase for backend services.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Deploy to Vercel
+vercel
+```
