@@ -88,6 +88,14 @@ export default function Nav() {
               >
                 Reports
               </Link>
+              <Link
+                href="/settings"
+                className={`px-2 py-1 ${
+                  pathname === "/settings" ? "text-blue-600 font-medium" : ""
+                }`}
+              >
+                Settings
+              </Link>
             </div>
           )}
         </div>
