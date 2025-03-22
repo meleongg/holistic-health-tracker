@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Nav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -18,11 +19,30 @@ export default function Nav() {
     return () => unsubscribe();
   }, []);
 
+  // Don't show navbar on login page
+  if (pathname === "/" && user) {
+    // If on home page but authenticated, redirect to dashboard
+    router.replace("/dashboard");
+    return null;
+  }
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (user) {
+      e.preventDefault();
+      router.push("/dashboard");
+    }
+    // If not authenticated, normal link behavior to "/"
+  };
+
   return (
     <nav className="border-b py-4">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link href="/" className="text-xl font-bold">
+          <Link
+            href={user ? "/dashboard" : "/"}
+            className="text-xl font-bold"
+            onClick={handleLogoClick}
+          >
             Holistic Health Tracker
           </Link>
 
