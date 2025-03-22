@@ -20,6 +20,9 @@
 # production
 /build
 
+# test-data
+app/test-data
+
 # misc
 .DS_Store
 *.pem
