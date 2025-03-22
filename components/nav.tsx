@@ -72,6 +72,22 @@ export default function Nav() {
               >
                 Treatments
               </Link>
+              <Link
+                href="/analytics"
+                className={`px-2 py-1 ${
+                  pathname === "/analytics" ? "text-blue-600 font-medium" : ""
+                }`}
+              >
+                Analytics
+              </Link>
+              <Link
+                href="/reports"
+                className={`px-2 py-1 ${
+                  pathname === "/reports" ? "text-blue-600 font-medium" : ""
+                }`}
+              >
+                Reports
+              </Link>
             </div>
           )}
         </div>

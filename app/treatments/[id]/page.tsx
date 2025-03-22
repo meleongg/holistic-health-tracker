@@ -10,9 +10,23 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+// Define an interface for the treatment data
+interface Treatment {
+  id: string;
+  name: string;
+  type: string;
+  frequency: string;
+  conditionId: string;
+  conditionName: string;
+  userId: string;
+  effectiveness?: number;
+  notes?: string;
+  createdAt: any;
+}
+
 export default function TreatmentDetailsPage() {
   const [user, setUser] = useState<any>(null);
-  const [treatment, setTreatment] = useState<any>(null);
+  const [treatment, setTreatment] = useState<Treatment | null>(null);
   const [loading, setLoading] = useState(true);
   const [effectiveness, setEffectiveness] = useState(0);
   const [notes, setNotes] = useState("");
@@ -38,7 +52,12 @@ export default function TreatmentDetailsPage() {
       const treatmentDoc = await getDoc(doc(db, "treatments", id));
 
       if (treatmentDoc.exists() && treatmentDoc.data().userId === userId) {
-        const treatmentData = { id: treatmentDoc.id, ...treatmentDoc.data() };
+        // Cast the data to our Treatment type with proper typing
+        const treatmentData = {
+          id: treatmentDoc.id,
+          ...treatmentDoc.data(),
+        } as Treatment;
+
         setTreatment(treatmentData);
         setEffectiveness(treatmentData.effectiveness || 0);
         setNotes(treatmentData.notes || "");
