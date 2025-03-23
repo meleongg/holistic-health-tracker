@@ -1,9 +1,18 @@
 "use client";
 
+// Update imports to use Lucide React directly
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch"; // Add this import
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -16,9 +25,17 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
+import {
+  Activity as ActivityIcon,
+  CheckCircle as CheckCircleIcon,
+  Check as CheckIcon,
+  Circle as CircleIcon,
+  ExternalLink as ExternalLinkIcon,
+  Pill as PillIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner"; // Add this import
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
@@ -27,6 +44,10 @@ export default function Dashboard() {
   const [periodCompletions, setPeriodCompletions] = useState<any[]>([]); // New state for tracking period completions
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showAllTreatments, setShowAllTreatments] = useState(false); // New state for toggle
+  const [filterType, setFilterType] = useState("all");
+  const [filterCondition, setFilterCondition] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const treatmentsPerPage = 5;
   const router = useRouter();
 
   useEffect(() => {
@@ -268,12 +289,50 @@ export default function Dashboard() {
     }
   };
 
+  // Add this to derive condition options from treatments
+  const conditionOptions = useMemo(() => {
+    const uniqueConditions = new Map();
+    treatments.forEach((treatment) => {
+      if (
+        treatment.conditionId &&
+        !uniqueConditions.has(treatment.conditionId)
+      ) {
+        uniqueConditions.set(treatment.conditionId, {
+          id: treatment.conditionId,
+          name: treatment.conditionName || "Unknown Condition",
+        });
+      }
+    });
+    return Array.from(uniqueConditions.values());
+  }, [treatments]);
+
   if (!user) {
     return <div>Loading...</div>;
   }
 
   // Filter treatments based on frequency and completion status
   const filteredTreatments = treatments.filter(shouldShowTreatment);
+
+  // Filter treatments based on type and condition
+  const displayedTreatments = filteredTreatments.filter((treatment) => {
+    if (filterType !== "all" && treatment.type !== filterType) {
+      return false;
+    }
+    if (
+      filterCondition !== "all" &&
+      treatment.conditionId !== filterCondition
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  // Pagination logic
+  const pageCount = Math.ceil(displayedTreatments.length / treatmentsPerPage);
+  const currentTreatments = displayedTreatments.slice(
+    (currentPage - 1) * treatmentsPerPage,
+    currentPage * treatmentsPerPage
+  );
 
   return (
     <div className="space-y-6">
@@ -310,11 +369,43 @@ export default function Dashboard() {
 
         <div className="md:col-span-2">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle>
                 Treatments for {selectedDate.toLocaleDateString()}
               </CardTitle>
+              <div className="flex items-center space-x-2">
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className="w-[140px] h-8 text-xs">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="pharmaceutical">Medications</SelectItem>
+                    <SelectItem value="non-pharmaceutical">
+                      Lifestyle
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  value={filterCondition}
+                  onValueChange={setFilterCondition}
+                >
+                  <SelectTrigger className="w-[160px] h-8 text-xs">
+                    <SelectValue placeholder="Filter by condition" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Conditions</SelectItem>
+                    {conditionOptions.map((condition) => (
+                      <SelectItem key={condition.id} value={condition.id}>
+                        {condition.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
+
             <CardContent>
               {treatments.length === 0 ? (
                 <div className="text-center py-6">
@@ -329,83 +420,205 @@ export default function Dashboard() {
                     Add Treatments
                   </Button>
                 </div>
-              ) : filteredTreatments.length === 0 ? (
+              ) : displayedTreatments.length === 0 ? (
                 <div className="text-center py-6">
                   <p className="text-muted-foreground">
-                    No treatments due for this period
+                    No treatments match your current filters
                   </p>
                   <Button
                     className="mt-2"
                     variant="outline"
-                    onClick={() => setShowAllTreatments(true)}
+                    onClick={() => {
+                      setFilterType("all");
+                      setFilterCondition("all");
+                      setShowAllTreatments(true);
+                    }}
                   >
-                    Show All Treatments
+                    Reset Filters
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {filteredTreatments.map((treatment) => (
-                    <div
-                      key={treatment.id}
-                      className={`p-4 border rounded-md flex justify-between items-center ${
-                        isCompleted(treatment.id)
-                          ? "bg-green-50 border-green-200"
-                          : isCompletedInPeriod(treatment)
-                          ? "bg-blue-50 border-blue-200"
-                          : ""
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{treatment.name}</h3>
-                          {!isCompleted(treatment.id) &&
-                            isCompletedInPeriod(treatment) && (
-                              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                                {getCompletionPeriodText(treatment)}
-                              </span>
-                            )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {treatment.type === "pharmaceutical"
-                            ? "Medication"
-                            : "Lifestyle"}{" "}
-                          • {treatment.frequency} • For:{" "}
-                          {treatment.conditionName}
-                        </p>
-                      </div>
-                      <Button
-                        variant={
-                          isCompleted(treatment.id) ||
-                          (showAllTreatments && isCompletedInPeriod(treatment))
-                            ? "default"
-                            : "outline"
-                        }
-                        size="sm"
-                        onClick={() => {
-                          if (isCompleted(treatment.id)) {
-                            // If completed today, mark as incomplete
-                            markComplete(treatment.id);
-                          } else if (
-                            showAllTreatments &&
-                            isCompletedInPeriod(treatment)
-                          ) {
-                            // If completed in period but not today, allow marking incomplete by creating
-                            // a completion for today then immediately deleting it
-                            handlePeriodCompletionToggle(treatment);
-                          } else {
-                            // Not completed, mark as complete
-                            markComplete(treatment.id);
-                          }
-                        }}
+                <>
+                  <div className="space-y-3">
+                    {currentTreatments.map((treatment) => (
+                      <div
+                        key={treatment.id}
+                        className={`p-4 rounded-md border transition-all ${
+                          isCompleted(treatment.id)
+                            ? "bg-green-50 border-green-200 shadow-sm"
+                            : isCompletedInPeriod(treatment)
+                            ? "bg-blue-50 border-blue-200"
+                            : "hover:border-primary/30 hover:bg-muted/20"
+                        }`}
                       >
-                        {isCompleted(treatment.id) ||
-                        (showAllTreatments && isCompletedInPeriod(treatment))
-                          ? "Completed ✓"
-                          : "Mark Complete"}
-                      </Button>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-start gap-3">
+                            <div
+                              className={`mt-1 w-8 h-8 rounded-full flex items-center justify-center ${
+                                isCompleted(treatment.id)
+                                  ? "bg-green-100 text-green-700"
+                                  : isCompletedInPeriod(treatment)
+                                  ? "bg-blue-100 text-blue-700"
+                                  : "bg-slate-100 text-slate-500"
+                              }`}
+                            >
+                              {treatment.type === "pharmaceutical" ? (
+                                <PillIcon className="h-4 w-4" />
+                              ) : (
+                                <ActivityIcon className="h-4 w-4" />
+                              )}
+                            </div>
+
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <h3 className="font-medium">
+                                  {treatment.name}
+                                </h3>
+                                <Badge
+                                  variant="outline"
+                                  className="ml-1 text-xs"
+                                >
+                                  {treatment.frequency}
+                                </Badge>
+                              </div>
+
+                              <div className="flex items-center text-sm text-muted-foreground">
+                                <span className="flex items-center">
+                                  {treatment.type === "pharmaceutical"
+                                    ? "Medication"
+                                    : "Lifestyle"}
+                                </span>
+                                <span className="mx-1.5">•</span>
+                                <span>{treatment.conditionName}</span>
+                              </div>
+
+                              {!isCompleted(treatment.id) &&
+                                isCompletedInPeriod(treatment) && (
+                                  <div className="mt-1.5">
+                                    <span className="inline-flex items-center text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                                      <CheckCircleIcon className="mr-1 h-3 w-3" />
+                                      {getCompletionPeriodText(treatment)}
+                                    </span>
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant={
+                                isCompleted(treatment.id) ||
+                                (showAllTreatments &&
+                                  isCompletedInPeriod(treatment))
+                                  ? "default"
+                                  : "outline"
+                              }
+                              size="sm"
+                              className={
+                                isCompleted(treatment.id)
+                                  ? "bg-green-600 hover:bg-green-700"
+                                  : ""
+                              }
+                              onClick={() => {
+                                if (isCompleted(treatment.id)) {
+                                  markComplete(treatment.id);
+                                } else if (
+                                  showAllTreatments &&
+                                  isCompletedInPeriod(treatment)
+                                ) {
+                                  handlePeriodCompletionToggle(treatment);
+                                } else {
+                                  markComplete(treatment.id);
+                                }
+                              }}
+                            >
+                              {isCompleted(treatment.id) ||
+                              (showAllTreatments &&
+                                isCompletedInPeriod(treatment)) ? (
+                                <>
+                                  <CheckIcon className="h-4 w-4 mr-1" />{" "}
+                                  Complete
+                                </>
+                              ) : (
+                                <>
+                                  <CircleIcon className="h-4 w-4 mr-1" /> Mark
+                                  Done
+                                </>
+                              )}
+                            </Button>
+
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="px-2"
+                              onClick={() =>
+                                router.push(`/treatments/${treatment.id}`)
+                              }
+                            >
+                              <ExternalLinkIcon className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Pagination controls */}
+                  {displayedTreatments.length > treatmentsPerPage && (
+                    <div className="flex justify-center mt-6">
+                      <div className="flex space-x-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setCurrentPage((p) => Math.max(1, p - 1))
+                          }
+                          disabled={currentPage === 1}
+                        >
+                          Previous
+                        </Button>
+
+                        {Array.from({ length: pageCount }, (_, i) => i + 1)
+                          .filter(
+                            (page) =>
+                              page === 1 ||
+                              page === pageCount ||
+                              (page >= currentPage - 1 &&
+                                page <= currentPage + 1)
+                          )
+                          .map((page, i, arr) => (
+                            <React.Fragment key={page}>
+                              {i > 0 && arr[i - 1] !== page - 1 && (
+                                <Button variant="outline" size="sm" disabled>
+                                  ...
+                                </Button>
+                              )}
+                              <Button
+                                variant={
+                                  currentPage === page ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setCurrentPage(page)}
+                              >
+                                {page}
+                              </Button>
+                            </React.Fragment>
+                          ))}
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setCurrentPage((p) => Math.min(pageCount, p + 1))
+                          }
+                          disabled={currentPage === pageCount}
+                        >
+                          Next
+                        </Button>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
