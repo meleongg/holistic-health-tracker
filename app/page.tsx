@@ -367,12 +367,12 @@ export default function Home() {
 
                       <p className="text-xs text-center text-muted-foreground">
                         By creating an account, you agree to our
-                        <Button
-                          variant="link"
-                          className="p-0 h-auto text-xs mx-1"
+                        <Link
+                          href="/terms"
+                          className="text-primary hover:underline text-xs mx-1"
                         >
                           Terms of Service
-                        </Button>
+                        </Link>
                         and
                         <Link
                           href="/privacy"
@@ -586,9 +586,12 @@ export default function Home() {
                   </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    href="/terms"
+                    className="hover:text-white transition-colors"
+                  >
                     Terms of Service
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
