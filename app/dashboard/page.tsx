@@ -29,8 +29,8 @@ import {
   Activity as ActivityIcon,
   CheckCircle as CheckCircleIcon,
   Check as CheckIcon,
-  Circle as CircleIcon,
-  ExternalLink as ExternalLinkIcon,
+  Circle as CircleIcon, // Add this for details button
+  FileText, // Add this as another option
   Pill as PillIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -526,7 +526,7 @@ export default function Dashboard() {
                           </div>
 
                           {/* Improved responsive buttons */}
-                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-2 sm:mt-0">
                             <Button
                               variant={
                                 isCompleted(treatment.id) ||
@@ -536,7 +536,7 @@ export default function Dashboard() {
                                   : "outline"
                               }
                               size="sm"
-                              className={`h-9 px-3 w-full ${
+                              className={`h-9 ${
                                 isCompleted(treatment.id)
                                   ? "bg-green-600 hover:bg-green-700"
                                   : ""
@@ -572,13 +572,13 @@ export default function Dashboard() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-9 w-full sm:w-auto"
+                              className="h-9"
                               onClick={() =>
                                 router.push(`/treatments/${treatment.id}`)
                               }
                             >
-                              <ExternalLinkIcon className="h-4 w-4 mr-1.5 sm:mr-0" />
-                              <span className="sm:hidden">Details</span>
+                              <FileText className="h-4 w-4 mr-1.5" />
+                              <span>Details</span>
                             </Button>
                           </div>
                         </div>
