@@ -158,7 +158,7 @@ export default function SettingsPage() {
             <div className="relative">
               <Input
                 id="email"
-                value={user?.email}
+                value={user?.email || ""} // Add the empty string fallback
                 disabled
                 className="pl-9 bg-muted/50"
               />
