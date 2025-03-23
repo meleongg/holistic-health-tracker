@@ -106,8 +106,6 @@ export default function TreatmentsPage() {
       const condition = conditions.find((c) => c.id === conditionId);
       if (!condition) return;
 
-      console.log("Fetching suggestions for:", condition.name);
-
       const response = await fetch("/api/treatment-suggestions", {
         method: "POST",
         headers: {
@@ -122,11 +120,9 @@ export default function TreatmentsPage() {
       if (!response.ok) throw new Error("Failed to fetch suggestions");
 
       const data = await response.json();
-      console.log("API response:", data); // Log the actual response
 
       // Check if data.suggestions exists, otherwise use an empty array or the whole data
       const suggestionsData = data.suggestions || [];
-      console.log("Setting suggestions:", suggestionsData);
 
       setSuggestions(suggestionsData);
     } catch (error) {
