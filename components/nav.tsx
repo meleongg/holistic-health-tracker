@@ -106,8 +106,8 @@ export default function Nav() {
   );
 
   return (
-    <nav className="border-b py-2 bg-background sticky top-0 z-40">
-      <div className="container mx-auto flex items-center justify-between">
+    <nav className="border-b bg-background sticky top-0 z-40 py-3 sm:py-2">
+      <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Logo and Desktop Navigation */}
         <div className="flex items-center">
           <Link
@@ -161,7 +161,7 @@ export default function Nav() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="md:hidden"
+                className="md:hidden p-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? (
@@ -177,12 +177,12 @@ export default function Nav() {
 
       {/* Mobile Navigation */}
       {user && mobileMenuOpen && (
-        <div className="md:hidden container mx-auto pt-2 pb-3 space-y-1">
+        <div className="md:hidden container mx-auto px-4 pt-3 pb-4 space-y-2 border-t mt-2 bg-background">
           {navItems.map((item) => (
             <NavLink key={item.href} item={item} />
           ))}
           <div
-            className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-red-500 hover:bg-red-50 cursor-pointer"
+            className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-red-500 hover:bg-red-50 cursor-pointer mt-2"
             onClick={() => signOut(auth)}
           >
             <LogOut className="h-4 w-4 mr-2" />
