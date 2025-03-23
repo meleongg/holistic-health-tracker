@@ -38,10 +38,7 @@ bun dev
 
 - **Email Notifications**: Automated reminders for treatment adherence
 - **Weekly/Monthly Reports**: Summaries of treatment completion and effectiveness
-- **Settings Page**: User preferences for notifications and app behavior
-- **Analytics Dashboard**: Visual insights into treatment effectiveness
 - **Mobile App**: Native mobile experience using React Native
-- **Data Export**: Export health data to PDF or CSV format
 
 ## 🔄 Deployment
 
