@@ -23,23 +23,53 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Loader2 } from "lucide-react";
+import {
+  GroupIcon,
+  ListIcon,
+  Loader2,
+  PencilIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+
+// Define interfaces for your data structures
+interface Treatment {
+  id: string;
+  name: string;
+  type: string;
+  frequency: string;
+  conditionId: string;
+  conditionName: string;
+  effectiveness?: number;
+  userId: string;
+  createdAt: any; // or Date if you're converting the Firestore timestamp
+}
+
+interface Condition {
+  id: string;
+  name: string;
+  description?: string;
+  userId: string;
+}
 
 export default function TreatmentsPage() {
   const [user, setUser] = useState<any>(null);
-  const [conditions, setConditions] = useState<any[]>([]);
+  const [conditions, setConditions] = useState<Condition[]>([]);
   const [selectedCondition, setSelectedCondition] = useState("");
   const [treatmentName, setTreatmentName] = useState("");
   const [treatmentType, setTreatmentType] = useState("pharmaceutical");
   const [frequency, setFrequency] = useState("daily");
-  const [treatments, setTreatments] = useState<any[]>([]);
+  const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [loading, setLoading] = useState(true);
   const [conditionsLoading, setConditionsLoading] = useState(true);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [filterCondition, setFilterCondition] = useState("all");
+  const [viewType, setViewType] = useState<"list" | "grouped">("list");
+  const [currentPage, setCurrentPage] = useState(1);
+  const treatmentsPerPage = 5;
   const router = useRouter();
 
   useEffect(() => {
@@ -67,7 +97,8 @@ export default function TreatmentsPage() {
       const conditionsList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as Condition[]; // Add this type assertion
+
       setConditions(conditionsList);
     } catch (error) {
       console.error("Error fetching conditions:", error);
@@ -89,7 +120,8 @@ export default function TreatmentsPage() {
       const treatmentsList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as Treatment[]; // Add this type assertion
+
       setTreatments(treatmentsList);
     } catch (error) {
       console.error("Error fetching treatments:", error);
@@ -168,6 +200,32 @@ export default function TreatmentsPage() {
       console.error(error);
     }
   };
+
+  const filteredTreatments = useMemo(() => {
+    return filterCondition === "all"
+      ? treatments
+      : treatments.filter((t) => t.conditionId === filterCondition);
+  }, [treatments, filterCondition]);
+
+  const pageCount = Math.ceil(filteredTreatments.length / treatmentsPerPage);
+  const currentTreatments = useMemo(() => {
+    const startIndex = (currentPage - 1) * treatmentsPerPage;
+    return filteredTreatments.slice(startIndex, startIndex + treatmentsPerPage);
+  }, [filteredTreatments, currentPage, treatmentsPerPage]);
+
+  const groupedTreatments = useMemo(() => {
+    return filteredTreatments.reduce<Record<string, Treatment[]>>(
+      (acc, treatment) => {
+        const conditionId = treatment.conditionId;
+        if (!acc[conditionId]) {
+          acc[conditionId] = [];
+        }
+        acc[conditionId].push(treatment);
+        return acc;
+      },
+      {}
+    );
+  }, [filteredTreatments]);
 
   if (!user && loading) {
     return <div>Loading...</div>;
@@ -322,64 +380,239 @@ export default function TreatmentsPage() {
       </Card>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Your Treatments</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">Your Treatments</h2>
+
+          <div className="flex items-center space-x-2">
+            {/* Filter dropdown */}
+            <Select value={filterCondition} onValueChange={setFilterCondition}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by condition" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Conditions</SelectItem>
+                {conditions.map((condition) => (
+                  <SelectItem key={condition.id} value={condition.id}>
+                    {condition.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* View type toggle */}
+            <div className="border rounded-md flex">
+              <Button
+                variant={viewType === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewType("list")}
+                className="rounded-r-none px-3"
+              >
+                <ListIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewType === "grouped" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewType("grouped")}
+                className="rounded-l-none px-3"
+              >
+                <GroupIcon className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
 
         {loading ? (
-          <p>Loading treatments...</p>
-        ) : treatments.length === 0 ? (
-          <p className="text-muted-foreground">No treatments added yet.</p>
-        ) : (
-          treatments.map((treatment) => (
-            <Card
-              key={treatment.id}
-              className="hover:shadow-md transition-shadow"
-            >
-              <CardContent className="pt-6">
-                <div className="flex justify-between items-center">
-                  <div
-                    className="flex-1 cursor-pointer"
-                    onClick={() => router.push(`/treatments/${treatment.id}`)}
-                  >
-                    <h3 className="text-lg font-medium">
-                      {treatment.name}
-                      {treatment.effectiveness && (
-                        <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-                          Rated: {treatment.effectiveness}/10
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {treatment.type === "pharmaceutical"
-                        ? "Medication"
-                        : "Lifestyle"}{" "}
-                      • {treatment.frequency} • For: {treatment.conditionName}
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : filteredTreatments.length === 0 ? (
+          <div className="text-center py-8 border rounded-lg bg-slate-50">
+            <p className="text-muted-foreground">No treatments found.</p>
+            {filterCondition !== "all" && (
+              <p className="text-sm mt-1">
+                Try changing your filter or{" "}
+                <Button
+                  variant="link"
+                  className="p-0 h-auto"
+                  onClick={() => setFilterCondition("all")}
+                >
+                  view all treatments
+                </Button>
+              </p>
+            )}
+          </div>
+        ) : viewType === "list" ? (
+          // List view with pagination
+          <>
+            {currentTreatments.map((treatment) => (
+              <Card
+                key={treatment.id}
+                className="hover:shadow-md transition-shadow"
+              >
+                <CardContent className="pt-6">
+                  <div className="flex justify-between items-center">
+                    <div
+                      className="flex-1 cursor-pointer"
                       onClick={() => router.push(`/treatments/${treatment.id}`)}
                     >
-                      Details
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteTreatment(treatment.id)}
-                    >
-                      Delete
-                    </Button>
+                      <h3 className="text-lg font-medium">
+                        {treatment.name}
+                        {treatment.effectiveness && (
+                          <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                            Rated: {treatment.effectiveness}/10
+                          </span>
+                        )}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {treatment.type === "pharmaceutical"
+                          ? "Medication"
+                          : "Lifestyle"}{" "}
+                        • {treatment.frequency} • For: {treatment.conditionName}
+                      </p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          router.push(`/treatments/${treatment.id}`)
+                        }
+                      >
+                        Details
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteTreatment(treatment.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
+                  {!treatment.effectiveness && (
+                    <div className="text-xs text-muted-foreground mt-3 border-t pt-2 italic">
+                      Click to rate effectiveness and add treatment notes
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Pagination controls */}
+            {filteredTreatments.length > treatmentsPerPage && (
+              <div className="flex justify-center mt-6">
+                <div className="flex space-x-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  {Array.from({ length: pageCount }, (_, i) => i + 1).map(
+                    (page) => (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </Button>
+                    )
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(pageCount, p + 1))
+                    }
+                    disabled={currentPage === pageCount}
+                  >
+                    Next
+                  </Button>
                 </div>
-                {!treatment.effectiveness && (
-                  <div className="text-xs text-muted-foreground mt-3 border-t pt-2 italic">
-                    Click to rate effectiveness and add treatment notes
+              </div>
+            )}
+          </>
+        ) : (
+          // Grouped view by condition
+          <div className="space-y-6">
+            {Object.entries(groupedTreatments).map(
+              ([conditionId, treatments]) => {
+                const condition = conditions.find(
+                  (c) => c.id === conditionId
+                ) || { name: "Unknown Condition" };
+                return (
+                  <div key={conditionId} className="space-y-3">
+                    <h3 className="font-medium text-lg border-b pb-2">
+                      {condition.name}
+                      <span className="ml-2 text-sm font-normal text-muted-foreground">
+                        ({treatments.length} treatments)
+                      </span>
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {treatments.map((treatment) => (
+                        <div
+                          key={treatment.id}
+                          className="border rounded-md p-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                          onClick={() =>
+                            router.push(`/treatments/${treatment.id}`)
+                          }
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="font-medium">
+                                {treatment.name}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {treatment.type === "pharmaceutical"
+                                  ? "Medication"
+                                  : "Lifestyle"}{" "}
+                                • {treatment.frequency}
+                              </div>
+                            </div>
+                            <div className="flex space-x-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push(`/treatments/${treatment.id}`);
+                                }}
+                              >
+                                <PencilIcon className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0 hover:bg-red-100 hover:text-red-700"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteTreatment(treatment.id);
+                                }}
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          {treatment.effectiveness && (
+                            <div className="mt-1 text-xs">
+                              <span className="bg-green-100 text-green-800 px-1.5 py-0.5 rounded-full">
+                                Rated: {treatment.effectiveness}/10
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          ))
+                );
+              }
+            )}
+          </div>
         )}
       </div>
     </div>
