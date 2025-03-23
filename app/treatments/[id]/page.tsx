@@ -190,20 +190,26 @@ export default function TreatmentDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex flex-col justify-center items-center h-[50vh] space-y-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">
+          Loading treatment details...
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{treatment?.name}</h1>
-        <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+        <h1 className="text-xl sm:text-2xl font-bold truncate">
+          {treatment?.name}
+        </h1>
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             size="sm"
+            className="h-9 w-full sm:w-auto justify-center"
             onClick={() => setIsEditing(!isEditing)}
           >
             <PencilIcon className="h-4 w-4 mr-2" />
@@ -212,6 +218,7 @@ export default function TreatmentDetailsPage() {
           <Button
             variant="outline"
             size="sm"
+            className="h-9 w-full sm:w-auto justify-center"
             onClick={() => router.push("/treatments")}
           >
             Back to Treatments
@@ -219,10 +226,14 @@ export default function TreatmentDetailsPage() {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="details">Treatment Details</TabsTrigger>
-          <TabsTrigger value="effectiveness">Track Effectiveness</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="mb-4 grid grid-cols-2 w-full">
+          <TabsTrigger value="details" className="text-sm">
+            Treatment Details
+          </TabsTrigger>
+          <TabsTrigger value="effectiveness" className="text-sm">
+            Track Effectiveness
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="details">
@@ -240,45 +251,48 @@ export default function TreatmentDetailsPage() {
                     <Input
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
+                      className="h-10"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Type
-                    </label>
-                    <Select value={editType} onValueChange={setEditType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pharmaceutical">
-                          Medication
-                        </SelectItem>
-                        <SelectItem value="non-pharmaceutical">
-                          Lifestyle/Alternative
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Type
+                      </label>
+                      <Select value={editType} onValueChange={setEditType}>
+                        <SelectTrigger className="h-10">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pharmaceutical">
+                            Medication
+                          </SelectItem>
+                          <SelectItem value="non-pharmaceutical">
+                            Lifestyle/Alternative
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Frequency
-                    </label>
-                    <Select
-                      value={editFrequency}
-                      onValueChange={setEditFrequency}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select frequency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Frequency
+                      </label>
+                      <Select
+                        value={editFrequency}
+                        onValueChange={setEditFrequency}
+                      >
+                        <SelectTrigger className="h-10">
+                          <SelectValue placeholder="Select frequency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="daily">Daily</SelectItem>
+                          <SelectItem value="weekly">Weekly</SelectItem>
+                          <SelectItem value="monthly">Monthly</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   <div>
@@ -289,7 +303,7 @@ export default function TreatmentDetailsPage() {
                       value={editConditionId}
                       onValueChange={setEditConditionId}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Select a condition" />
                       </SelectTrigger>
                       <SelectContent>
@@ -302,38 +316,47 @@ export default function TreatmentDetailsPage() {
                     </Select>
                   </div>
 
-                  <Button onClick={updateTreatmentDetails}>Save Changes</Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEditing(false)}
-                    className="ml-2"
-                  >
-                    Cancel
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                    <Button
+                      onClick={updateTreatmentDetails}
+                      className="w-full sm:w-auto h-10"
+                    >
+                      Save Changes
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                      className="w-full sm:w-auto h-10"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
+                  <div className="p-3 bg-slate-50 rounded-md">
                     <dt className="text-sm font-medium text-gray-500">Type</dt>
-                    <dd className="mt-1 text-lg">
+                    <dd className="mt-1 text-base sm:text-lg">
                       {treatment?.type === "pharmaceutical"
                         ? "Medication"
                         : "Lifestyle/Alternative"}
                     </dd>
                   </div>
-                  <div>
+                  <div className="p-3 bg-slate-50 rounded-md">
                     <dt className="text-sm font-medium text-gray-500">
                       Frequency
                     </dt>
-                    <dd className="mt-1 text-lg capitalize">
+                    <dd className="mt-1 text-base sm:text-lg capitalize">
                       {treatment?.frequency}
                     </dd>
                   </div>
-                  <div>
+                  <div className="p-3 bg-slate-50 rounded-md sm:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">
                       For Condition
                     </dt>
-                    <dd className="mt-1 text-lg">{treatment?.conditionName}</dd>
+                    <dd className="mt-1 text-base sm:text-lg">
+                      {treatment?.conditionName}
+                    </dd>
                   </div>
                 </dl>
               )}
@@ -352,12 +375,12 @@ export default function TreatmentDetailsPage() {
                   <label className="block text-sm font-medium mb-1">
                     How effective is this treatment? (1-10)
                   </label>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => (
                       <button
                         key={value}
                         type="button"
-                        className={`h-10 w-10 rounded-md ${
+                        className={`h-12 w-full rounded-md flex items-center justify-center ${
                           effectiveness === value
                             ? "bg-primary text-primary-foreground"
                             : "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
@@ -379,10 +402,14 @@ export default function TreatmentDetailsPage() {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={4}
+                    className="min-h-[100px]"
                   />
                 </div>
 
-                <Button onClick={updateTreatmentEffectiveness}>
+                <Button
+                  onClick={updateTreatmentEffectiveness}
+                  className="w-full sm:w-auto h-10 mt-2"
+                >
                   Save Changes
                 </Button>
               </div>
