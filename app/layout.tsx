@@ -1,5 +1,5 @@
 import { AuthProvider } from "@/contexts/auth-context";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next"; // Import Viewport type
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -17,6 +17,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Separate viewport configuration
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#1e293b" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
+// Regular metadata configuration (without themeColor and viewport)
 export const metadata: Metadata = {
   title: "Holistic Health Tracker | Track All Your Treatments",
   description:
@@ -28,21 +40,16 @@ export const metadata: Metadata = {
     "medication tracker",
     "health app",
   ],
-  authors: [{ name: "Your Name" }],
-  creator: "Your Name or Company",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#1e293b" },
-  ],
+  authors: [{ name: "Melvin Teo" }],
+  creator: "Melvin Teo",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
   },
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://your-domain.com/",
+    url: "https://holistic-health-tracker.vercel.app/",
     title: "Holistic Health Tracker",
     description:
       "Your all-in-one solution for tracking medical and alternative treatments",
