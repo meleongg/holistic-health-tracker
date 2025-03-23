@@ -3,6 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,6 +17,10 @@ import {
   CalendarIcon,
   CheckCircle2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Info,
   Loader2,
   TrendingUp,
@@ -32,21 +42,28 @@ export default function AnalyticsPage() {
   const [adherenceData, setAdherenceData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("weekly");
+  const [timeRange, setTimeRange] = useState<string>("7");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(7); // Show 7 days per page
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       if (user) {
-        fetchAdherenceData(user.uid);
+        fetchAdherenceData(user.uid, parseInt(timeRange));
       } else {
         router.push("/");
       }
     });
     return () => unsubscribe();
-  }, [router]);
+  }, [router, timeRange]);
 
-  const fetchAdherenceData = async (userId: string) => {
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [timeRange]);
+
+  const fetchAdherenceData = async (userId: string, days: number = 7) => {
     setLoading(true);
 
     try {
@@ -69,9 +86,9 @@ export default function AnalyticsPage() {
       const completionsSnapshot = await getDocs(completionsQuery);
       const completions = completionsSnapshot.docs.map((doc) => doc.data());
 
-      // Calculate adherence by day (last 7 days)
+      // Calculate adherence by day (for specified number of days)
       const dates = [];
-      for (let i = 6; i >= 0; i--) {
+      for (let i = days - 1; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
         dates.push(date);
@@ -154,6 +171,19 @@ export default function AnalyticsPage() {
     return { text: "Needs Improvement", color: "bg-red-100 text-red-800" };
   };
 
+  const handleTimeRangeChange = (days: string) => {
+    setTimeRange(days);
+    if (user) {
+      fetchAdherenceData(user.uid, parseInt(days));
+    }
+  };
+
+  const totalPages = Math.ceil(adherenceData.length / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center h-[60vh]">
@@ -169,9 +199,36 @@ export default function AnalyticsPage() {
         <h1 className="text-xl sm:text-2xl font-bold">Treatment Analytics</h1>
 
         <div className="flex items-center mt-2 sm:mt-0">
-          <Button variant="outline" size="sm" className="gap-1 text-sm h-9">
-            Last 7 Days <ChevronDown className="h-4 w-4 ml-1" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1 text-sm h-9">
+                {timeRange === "7"
+                  ? "Last 7 Days"
+                  : timeRange === "14"
+                  ? "Last 14 Days"
+                  : timeRange === "30"
+                  ? "Last 30 Days"
+                  : timeRange === "90"
+                  ? "Last 90 Days"
+                  : `Last ${timeRange} Days`}
+                <ChevronDown className="h-4 w-4 ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleTimeRangeChange("7")}>
+                Last 7 Days
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleTimeRangeChange("14")}>
+                Last 14 Days
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleTimeRangeChange("30")}>
+                Last 30 Days
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleTimeRangeChange("90")}>
+                Last 90 Days
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -261,7 +318,7 @@ export default function AnalyticsPage() {
       {/* Main Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Treatment Adherence (Last 7 Days)</CardTitle>
+          <CardTitle>Treatment Adherence (Last {timeRange} Days)</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs
@@ -330,47 +387,146 @@ export default function AnalyticsPage() {
 
             <TabsContent value="daily" className="m-0">
               <div className="space-y-6">
-                {adherenceData.map((day, i) => {
-                  const status = getAdherenceStatus(day.adherence);
-                  return (
-                    <div key={i} className="border rounded-lg p-4">
-                      {/* Rest of your daily tab content */}
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-                              <span className="font-bold">{day.day}</span>
+                {/* Pagination indicator */}
+                <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
+                  <span>
+                    Showing{" "}
+                    {Math.min(
+                      (currentPage - 1) * itemsPerPage + 1,
+                      adherenceData.length
+                    )}{" "}
+                    to{" "}
+                    {Math.min(currentPage * itemsPerPage, adherenceData.length)}{" "}
+                    of {adherenceData.length} days
+                  </span>
+                </div>
+
+                {/* Paginated data */}
+                {adherenceData
+                  .slice(
+                    (currentPage - 1) * itemsPerPage,
+                    currentPage * itemsPerPage
+                  )
+                  .map((day, i) => {
+                    const status = getAdherenceStatus(day.adherence);
+                    return (
+                      <div key={i} className="border rounded-lg p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <div className="flex items-center">
+                              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span className="font-bold">{day.day}</span>
+                              </div>
+                              <div>
+                                <p className="font-medium">{day.date}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {day.completed} of {day.total} treatments
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium">{day.date}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {day.completed} of {day.total} treatments
-                              </p>
-                            </div>
+
+                            <Badge
+                              className={`${status.color} self-start sm:self-auto mt-2 sm:mt-0`}
+                            >
+                              {status.text}
+                            </Badge>
                           </div>
 
-                          <Badge
-                            className={`${status.color} self-start sm:self-auto mt-2 sm:mt-0`}
-                          >
-                            {status.text}
-                          </Badge>
-                        </div>
-
-                        <div className="mt-3 sm:mt-0">
-                          <div className="flex items-center">
-                            <div className="w-full bg-gray-200 rounded-full h-2.5 mr-2 sm:w-32">
-                              <div
-                                className="bg-primary h-2.5 rounded-full"
-                                style={{ width: `${day.adherence}%` }}
-                              ></div>
+                          <div className="mt-3 sm:mt-0">
+                            <div className="flex items-center">
+                              <div className="w-full bg-gray-200 rounded-full h-2.5 mr-2 sm:w-32">
+                                <div
+                                  className="bg-primary h-2.5 rounded-full"
+                                  style={{ width: `${day.adherence}%` }}
+                                ></div>
+                              </div>
+                              <span className="font-bold">
+                                {day.adherence}%
+                              </span>
                             </div>
-                            <span className="font-bold">{day.adherence}%</span>
                           </div>
                         </div>
                       </div>
+                    );
+                  })}
+
+                {/* Pagination controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center space-x-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(1)}
+                      disabled={currentPage === 1}
+                      className="hidden sm:flex items-center justify-center h-8 w-8 p-0"
+                    >
+                      <ChevronsLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="h-8 w-8 p-0"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <div className="flex items-center text-sm">
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          // Show a window of 5 pages centered on the current page
+                          let pageNum;
+                          if (totalPages <= 5) {
+                            // If 5 or fewer pages, show all
+                            pageNum = i + 1;
+                          } else if (currentPage <= 3) {
+                            // If near start, show first 5 pages
+                            pageNum = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            // If near end, show last 5 pages
+                            pageNum = totalPages - 4 + i;
+                          } else {
+                            // Otherwise show window around current page
+                            pageNum = currentPage - 2 + i;
+                          }
+
+                          return (
+                            <Button
+                              key={pageNum}
+                              variant={
+                                currentPage === pageNum ? "default" : "outline"
+                              }
+                              size="sm"
+                              onClick={() => handlePageChange(pageNum)}
+                              className="h-8 w-8 p-0 mx-1"
+                            >
+                              {pageNum}
+                            </Button>
+                          );
+                        }
+                      )}
                     </div>
-                  );
-                })}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="h-8 w-8 p-0"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(totalPages)}
+                      disabled={currentPage === totalPages}
+                      className="hidden sm:flex items-center justify-center h-8 w-8 p-0"
+                    >
+                      <ChevronsRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>
