@@ -244,147 +244,158 @@ export default function Home() {
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
-              className="w-full"
+              className="w-full relative"
             >
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Create Account</TabsTrigger>
               </TabsList>
 
-              {/* Sign In Form */}
-              <TabsContent value="signin">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Welcome Back</CardTitle>
-                    <CardDescription>
-                      Sign in to your account to continue your health journey
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSignIn} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="signin-email">Email</Label>
-                        <Input
-                          id="signin-email"
-                          type="email"
-                          placeholder="your@email.com"
-                          value={signinEmail}
-                          onChange={(e) => setSigninEmail(e.target.value)}
-                          required
-                          className="h-10"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <Label htmlFor="signin-password">Password</Label>
-                          <Button variant="link" className="p-0 h-auto text-xs">
-                            Forgot password?
-                          </Button>
+              <div className="h-[480px]">
+                {/* Sign In Form */}
+                <TabsContent
+                  value="signin"
+                  className="data-[state=inactive]:hidden data-[state=active]:animate-in absolute w-full"
+                >
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Welcome Back</CardTitle>
+                      <CardDescription>
+                        Sign in to your account to continue your health journey
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleSignIn} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="signin-email">Email</Label>
+                          <Input
+                            id="signin-email"
+                            type="email"
+                            placeholder="your@email.com"
+                            value={signinEmail}
+                            onChange={(e) => setSigninEmail(e.target.value)}
+                            required
+                            className="h-10"
+                          />
                         </div>
-                        <Input
-                          id="signin-password"
-                          type="password"
-                          placeholder="••••••••"
-                          value={signinPassword}
-                          onChange={(e) => setSigninPassword(e.target.value)}
-                          required
-                          className="h-10"
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        className="w-full h-10"
-                        disabled={signingIn}
-                      >
-                        {signingIn ? "Signing in..." : "Sign In"}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <Label htmlFor="signin-password">Password</Label>
+                            <Button
+                              variant="link"
+                              className="p-0 h-auto text-xs"
+                            >
+                              Forgot password?
+                            </Button>
+                          </div>
+                          <Input
+                            id="signin-password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={signinPassword}
+                            onChange={(e) => setSigninPassword(e.target.value)}
+                            required
+                            className="h-10"
+                          />
+                        </div>
+                        <Button
+                          type="submit"
+                          className="w-full h-10"
+                          disabled={signingIn}
+                        >
+                          {signingIn ? "Signing in..." : "Sign In"}
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-              {/* Sign Up Form */}
-              <TabsContent value="signup">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Create Account</CardTitle>
-                    <CardDescription>
-                      Sign up to start tracking your health journey
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSignUp} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="signup-email">Email</Label>
-                        <Input
-                          id="signup-email"
-                          type="email"
-                          placeholder="your@email.com"
-                          value={signupEmail}
-                          onChange={(e) => setSignupEmail(e.target.value)}
-                          required
-                          className="h-10"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="signup-password">Password</Label>
-                        <Input
-                          id="signup-password"
-                          type="password"
-                          placeholder="••••••••"
-                          value={signupPassword}
-                          onChange={(e) => setSignupPassword(e.target.value)}
-                          required
-                          className="h-10"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          Must be at least 6 characters
+                {/* Sign Up Form */}
+                <TabsContent
+                  value="signup"
+                  className="data-[state=inactive]:hidden data-[state=active]:animate-in absolute w-full"
+                >
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle>Create Account</CardTitle>
+                      <CardDescription>
+                        Sign up to start tracking your health journey
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleSignUp} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="signup-email">Email</Label>
+                          <Input
+                            id="signup-email"
+                            type="email"
+                            placeholder="your@email.com"
+                            value={signupEmail}
+                            onChange={(e) => setSignupEmail(e.target.value)}
+                            required
+                            className="h-10"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="signup-password">Password</Label>
+                          <Input
+                            id="signup-password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={signupPassword}
+                            onChange={(e) => setSignupPassword(e.target.value)}
+                            required
+                            className="h-10"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Must be at least 6 characters
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="signup-confirm-password">
+                            Confirm Password
+                          </Label>
+                          <Input
+                            id="signup-confirm-password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={signupConfirmPassword}
+                            onChange={(e) =>
+                              setSignupConfirmPassword(e.target.value)
+                            }
+                            required
+                            className="h-10"
+                          />
+                        </div>
+                        <Button
+                          type="submit"
+                          className="w-full h-10"
+                          disabled={signingUp}
+                        >
+                          {signingUp ? "Creating account..." : "Create Account"}
+                        </Button>
+
+                        <p className="text-xs text-center text-muted-foreground">
+                          By creating an account, you agree to our
+                          <Link
+                            href="/terms"
+                            className="text-primary hover:underline text-xs mx-1"
+                          >
+                            Terms of Service
+                          </Link>
+                          and
+                          <Link
+                            href="/privacy"
+                            className="text-primary hover:underline text-xs ml-1"
+                          >
+                            Privacy Policy
+                          </Link>
                         </p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="signup-confirm-password">
-                          Confirm Password
-                        </Label>
-                        <Input
-                          id="signup-confirm-password"
-                          type="password"
-                          placeholder="••••••••"
-                          value={signupConfirmPassword}
-                          onChange={(e) =>
-                            setSignupConfirmPassword(e.target.value)
-                          }
-                          required
-                          className="h-10"
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        className="w-full h-10"
-                        disabled={signingUp}
-                      >
-                        {signingUp ? "Creating account..." : "Create Account"}
-                      </Button>
-
-                      <p className="text-xs text-center text-muted-foreground">
-                        By creating an account, you agree to our
-                        <Link
-                          href="/terms"
-                          className="text-primary hover:underline text-xs mx-1"
-                        >
-                          Terms of Service
-                        </Link>
-                        and
-                        <Link
-                          href="/privacy"
-                          className="text-primary hover:underline text-xs ml-1"
-                        >
-                          Privacy Policy
-                        </Link>
-                      </p>
-                    </form>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </div>
             </Tabs>
           </div>
         </div>
