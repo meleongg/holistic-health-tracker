@@ -344,16 +344,16 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle>Select Date</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-1 sm:px-6">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => date && setSelectedDate(date)}
-                className="rounded-md border"
+                className="rounded-md border mx-auto"
               />
 
               {/* Add view toggle */}
-              <div className="flex items-center space-x-2 mt-4">
+              <div className="flex items-center space-x-2 mt-4 px-2 sm:px-0">
                 <Switch
                   checked={showAllTreatments}
                   onCheckedChange={setShowAllTreatments}
@@ -369,13 +369,13 @@ export default function Dashboard() {
 
         <div className="md:col-span-2">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle>
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 pb-2">
+              <CardTitle className="text-lg">
                 Treatments for {selectedDate.toLocaleDateString()}
               </CardTitle>
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                 <Select value={filterType} onValueChange={setFilterType}>
-                  <SelectTrigger className="w-[140px] h-8 text-xs">
+                  <SelectTrigger className="w-full sm:w-[140px] h-9">
                     <SelectValue placeholder="Filter by type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -391,7 +391,7 @@ export default function Dashboard() {
                   value={filterCondition}
                   onValueChange={setFilterCondition}
                 >
-                  <SelectTrigger className="w-[160px] h-8 text-xs">
+                  <SelectTrigger className="w-full sm:w-[160px] h-9">
                     <SelectValue placeholder="Filter by condition" />
                   </SelectTrigger>
                   <SelectContent>
@@ -451,10 +451,10 @@ export default function Dashboard() {
                             : "hover:border-primary/30 hover:bg-muted/20"
                         }`}
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:justify-between">
                           <div className="flex items-start gap-3">
                             <div
-                              className={`mt-1 w-8 h-8 rounded-full flex items-center justify-center ${
+                              className={`mt-1 w-8 h-8 shrink-0 rounded-full flex items-center justify-center ${
                                 isCompleted(treatment.id)
                                   ? "bg-green-100 text-green-700"
                                   : isCompletedInPeriod(treatment)
@@ -469,27 +469,48 @@ export default function Dashboard() {
                               )}
                             </div>
 
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-0.5">
-                                <h3 className="font-medium">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                                <h3 className="font-medium truncate">
                                   {treatment.name}
                                 </h3>
-                                <Badge
-                                  variant="outline"
-                                  className="ml-1 text-xs"
-                                >
+                                <Badge variant="outline" className="text-xs">
                                   {treatment.frequency}
                                 </Badge>
                               </div>
 
-                              <div className="flex items-center text-sm text-muted-foreground">
-                                <span className="flex items-center">
-                                  {treatment.type === "pharmaceutical"
-                                    ? "Medication"
-                                    : "Lifestyle"}
-                                </span>
-                                <span className="mx-1.5">•</span>
-                                <span>{treatment.conditionName}</span>
+                              {/* Better responsive layout for medication type and condition */}
+                              <div className="text-sm text-muted-foreground mt-0.5">
+                                {/* Mobile layout - stacked */}
+                                <div className="flex flex-col gap-1 sm:hidden">
+                                  <div className="flex items-center">
+                                    {treatment.type === "pharmaceutical" ? (
+                                      <>
+                                        <PillIcon className="h-3 w-3 mr-1.5" />
+                                        <span>Medication</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ActivityIcon className="h-3 w-3 mr-1.5" />
+                                        <span>Lifestyle</span>
+                                      </>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <span>{treatment.conditionName}</span>
+                                  </div>
+                                </div>
+
+                                {/* Desktop layout - inline with bullet separator */}
+                                <div className="hidden sm:flex sm:items-center">
+                                  <span>
+                                    {treatment.type === "pharmaceutical"
+                                      ? "Medication"
+                                      : "Lifestyle"}
+                                  </span>
+                                  <span className="mx-2">•</span>
+                                  <span>{treatment.conditionName}</span>
+                                </div>
                               </div>
 
                               {!isCompleted(treatment.id) &&
@@ -504,7 +525,8 @@ export default function Dashboard() {
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-2">
+                          {/* Improved responsive buttons */}
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
                             <Button
                               variant={
                                 isCompleted(treatment.id) ||
@@ -514,11 +536,11 @@ export default function Dashboard() {
                                   : "outline"
                               }
                               size="sm"
-                              className={
+                              className={`h-9 px-3 w-full ${
                                 isCompleted(treatment.id)
                                   ? "bg-green-600 hover:bg-green-700"
                                   : ""
-                              }
+                              }`}
                               onClick={() => {
                                 if (isCompleted(treatment.id)) {
                                   markComplete(treatment.id);
@@ -536,12 +558,12 @@ export default function Dashboard() {
                               (showAllTreatments &&
                                 isCompletedInPeriod(treatment)) ? (
                                 <>
-                                  <CheckIcon className="h-4 w-4 mr-1" />{" "}
+                                  <CheckIcon className="h-4 w-4 mr-1.5" />{" "}
                                   Complete
                                 </>
                               ) : (
                                 <>
-                                  <CircleIcon className="h-4 w-4 mr-1" /> Mark
+                                  <CircleIcon className="h-4 w-4 mr-1.5" /> Mark
                                   Done
                                 </>
                               )}
@@ -550,12 +572,13 @@ export default function Dashboard() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="px-2"
+                              className="h-9 w-full sm:w-auto"
                               onClick={() =>
                                 router.push(`/treatments/${treatment.id}`)
                               }
                             >
-                              <ExternalLinkIcon className="h-4 w-4" />
+                              <ExternalLinkIcon className="h-4 w-4 mr-1.5 sm:mr-0" />
+                              <span className="sm:hidden">Details</span>
                             </Button>
                           </div>
                         </div>
@@ -566,10 +589,11 @@ export default function Dashboard() {
                   {/* Pagination controls */}
                   {displayedTreatments.length > treatmentsPerPage && (
                     <div className="flex justify-center mt-6">
-                      <div className="flex space-x-1">
+                      <div className="flex flex-wrap justify-center gap-1">
                         <Button
                           variant="outline"
                           size="sm"
+                          className="h-9"
                           onClick={() =>
                             setCurrentPage((p) => Math.max(1, p - 1))
                           }
@@ -578,36 +602,53 @@ export default function Dashboard() {
                           Previous
                         </Button>
 
-                        {Array.from({ length: pageCount }, (_, i) => i + 1)
-                          .filter(
-                            (page) =>
-                              page === 1 ||
-                              page === pageCount ||
-                              (page >= currentPage - 1 &&
-                                page <= currentPage + 1)
-                          )
-                          .map((page, i, arr) => (
-                            <React.Fragment key={page}>
-                              {i > 0 && arr[i - 1] !== page - 1 && (
-                                <Button variant="outline" size="sm" disabled>
-                                  ...
+                        {/* Show fewer page buttons on mobile */}
+                        <div className="hidden sm:flex space-x-1">
+                          {Array.from({ length: pageCount }, (_, i) => i + 1)
+                            .filter(
+                              (page) =>
+                                page === 1 ||
+                                page === pageCount ||
+                                (page >= currentPage - 1 &&
+                                  page <= currentPage + 1)
+                            )
+                            .map((page, i, arr) => (
+                              <React.Fragment key={page}>
+                                {i > 0 && arr[i - 1] !== page - 1 && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-9"
+                                    disabled
+                                  >
+                                    ...
+                                  </Button>
+                                )}
+                                <Button
+                                  variant={
+                                    currentPage === page ? "default" : "outline"
+                                  }
+                                  size="sm"
+                                  className="h-9"
+                                  onClick={() => setCurrentPage(page)}
+                                >
+                                  {page}
                                 </Button>
-                              )}
-                              <Button
-                                variant={
-                                  currentPage === page ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => setCurrentPage(page)}
-                              >
-                                {page}
-                              </Button>
-                            </React.Fragment>
-                          ))}
+                              </React.Fragment>
+                            ))}
+                        </div>
+
+                        {/* Mobile pagination is simpler */}
+                        <div className="sm:hidden flex items-center px-3 h-9 border rounded-md">
+                          <span className="text-sm">
+                            Page {currentPage} of {pageCount}
+                          </span>
+                        </div>
 
                         <Button
                           variant="outline"
                           size="sm"
+                          className="h-9"
                           onClick={() =>
                             setCurrentPage((p) => Math.min(pageCount, p + 1))
                           }
