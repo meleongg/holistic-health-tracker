@@ -1,12 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
-import { TimeInput } from "@/components/ui/time-input";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -108,7 +104,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Reminder Preferences</CardTitle>
         </CardHeader>
@@ -204,6 +200,23 @@ export default function SettingsPage() {
           </div>
 
           <Button onClick={saveUserProfile}>Save Preferences</Button>
+        </CardContent>
+      </Card> */}
+
+      <Card className="bg-muted/50">
+        <CardHeader>
+          <CardTitle>Reminder Preferences</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="py-6 text-center">
+            <p className="text-muted-foreground">
+              Email and SMS reminders are coming soon!
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              You'll be able to set up reminders for treatments and receive
+              weekly/monthly reports.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
