@@ -1,8 +1,10 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -21,6 +23,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -34,7 +37,9 @@ export default function TreatmentsPage() {
   const [frequency, setFrequency] = useState("daily");
   const [treatments, setTreatments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [conditionsLoading, setConditionsLoading] = useState(true); // Add this line
+  const [conditionsLoading, setConditionsLoading] = useState(true);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -51,7 +56,7 @@ export default function TreatmentsPage() {
   }, [router]);
 
   const fetchConditions = async (userId: string) => {
-    setConditionsLoading(true); // Add this line
+    setConditionsLoading(true);
     try {
       const conditionsQuery = query(
         collection(db, "conditions"),
@@ -68,7 +73,7 @@ export default function TreatmentsPage() {
       console.error("Error fetching conditions:", error);
       toast.error("Failed to load conditions");
     } finally {
-      setConditionsLoading(false); // Add this line
+      setConditionsLoading(false);
     }
   };
 
@@ -91,6 +96,44 @@ export default function TreatmentsPage() {
       toast.error("Failed to load treatments");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTreatmentSuggestions = async (conditionId: string) => {
+    setLoadingSuggestions(true);
+
+    try {
+      const condition = conditions.find((c) => c.id === conditionId);
+      if (!condition) return;
+
+      console.log("Fetching suggestions for:", condition.name);
+
+      const response = await fetch("/api/treatment-suggestions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          conditionName: condition.name,
+          description: condition.description || "",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch suggestions");
+
+      const data = await response.json();
+      console.log("API response:", data); // Log the actual response
+
+      // Check if data.suggestions exists, otherwise use an empty array or the whole data
+      const suggestionsData = data.suggestions || [];
+      console.log("Setting suggestions:", suggestionsData);
+
+      setSuggestions(suggestionsData);
+    } catch (error) {
+      console.error("Error fetching treatment suggestions:", error);
+      toast.error("Failed to load suggestions");
+    } finally {
+      setLoadingSuggestions(false);
     }
   };
 
@@ -150,7 +193,10 @@ export default function TreatmentsPage() {
               </label>
               <Select
                 value={selectedCondition}
-                onValueChange={setSelectedCondition}
+                onValueChange={(value) => {
+                  setSelectedCondition(value);
+                  if (value) fetchTreatmentSuggestions(value);
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a condition" />
@@ -169,6 +215,66 @@ export default function TreatmentsPage() {
                 </p>
               )}
             </div>
+
+            {selectedCondition && (
+              <div className="mt-4 border rounded-md p-4 bg-slate-50">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-medium">AI-Suggested Treatments</h3>
+                  {loadingSuggestions && (
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Loader2 className="h-3 w-3 animate-spin mr-2" />
+                      Generating suggestions...
+                    </div>
+                  )}
+                </div>
+
+                {!loadingSuggestions && suggestions.length > 0 ? (
+                  <ScrollArea className="h-[180px] pr-4">
+                    <div className="space-y-3">
+                      {suggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="border bg-white rounded-md p-3 cursor-pointer hover:bg-slate-100 transition-colors"
+                          onClick={() => {
+                            setTreatmentName(suggestion.name);
+                            setTreatmentType(suggestion.type);
+                            setFrequency(suggestion.frequency);
+                            toast.success(`Added "${suggestion.name}" to form`);
+                          }}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="font-medium">
+                                {suggestion.name}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {suggestion.type === "pharmaceutical"
+                                  ? "Medication"
+                                  : "Lifestyle"}{" "}
+                                {" • "}
+                                {suggestion.frequency}
+                              </div>
+                            </div>
+                            <Badge variant="outline" className="ml-2">
+                              Use
+                            </Badge>
+                          </div>
+                          {suggestion.description && (
+                            <p className="text-xs mt-2 text-muted-foreground">
+                              {suggestion.description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                ) : !loadingSuggestions ? (
+                  <p className="text-sm text-muted-foreground">
+                    Select a condition to see AI-suggested treatments
+                  </p>
+                ) : null}
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium mb-1">
