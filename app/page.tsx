@@ -26,6 +26,7 @@ import {
   Heart,
   LineChart,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -373,12 +374,12 @@ export default function Home() {
                           Terms of Service
                         </Button>
                         and
-                        <Button
-                          variant="link"
-                          className="p-0 h-auto text-xs ml-1"
+                        <Link
+                          href="/privacy"
+                          className="text-primary hover:underline text-xs ml-1"
                         >
                           Privacy Policy
-                        </Button>
+                        </Link>
                       </p>
                     </form>
                   </CardContent>
@@ -577,9 +578,12 @@ export default function Home() {
               <h3 className="font-semibold text-white mb-4">Legal</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link
+                    href="/privacy"
+                    className="hover:text-white transition-colors"
+                  >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">

@@ -11,6 +11,7 @@ import {
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import {
+  Activity,
   BarChart3,
   ClipboardList,
   FilePieChart,
@@ -112,10 +113,11 @@ export default function Nav() {
         <div className="flex items-center">
           <Link
             href={user ? "/dashboard" : "/"}
-            className="text-xl font-bold mr-4 md:mr-8"
+            className="flex items-center space-x-2 mr-4 md:mr-8"
             onClick={handleLogoClick}
           >
-            Holistic Health
+            <Activity className="h-5 w-5 text-primary" />
+            <span className="font-semibold">Holistic Health Tracker</span>
           </Link>
 
           {/* Desktop Navigation */}
