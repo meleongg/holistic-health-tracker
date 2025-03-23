@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // Update your prompt
+    // Update the prompt section to specify OTC and non-pharmaceutical only
     const prompt = `
       Generate 5 evidence-based treatment options for the medical condition: ${conditionName}.
       ${
@@ -35,16 +35,20 @@ export async function POST(request: Request) {
           : ""
       }
 
+      IMPORTANT RESTRICTIONS:
+      - Only include over-the-counter (OTC) medications that don't require a prescription
+      - Include non-pharmaceutical lifestyle interventions (diet, exercise, etc.)
+      - DO NOT include any prescription medications or treatments that require medical supervision
+
       For each treatment, provide:
-      1. A specific name (medication name or lifestyle intervention)
-      2. Type (either "pharmaceutical" or "non-pharmaceutical")
+      1. A specific name (OTC medication or lifestyle intervention)
+      2. Type (either "pharmaceutical" for OTC medications or "non-pharmaceutical" for lifestyle changes)
       3. Recommended frequency (daily, weekly, or monthly)
       4. A brief description of how it works or benefits the condition
 
       Format the response as a JSON object with a key named "suggestions" containing an array of objects.
       Each object in the "suggestions" array must have keys: name, type, frequency, and description.
-      Example format: { "suggestions": [ { "name": "...", "type": "...", "frequency": "...", "description": "..." }, ... ] }
-      Only include treatments that are well-established and evidence-based.
+      Only include treatments that are well-established, evidence-based, and accessible without a prescription.
     `;
 
     const response = await openai.chat.completions.create({
@@ -53,7 +57,7 @@ export async function POST(request: Request) {
         {
           role: "system",
           content:
-            "You are a medical assistant helping to suggest evidence-based treatments for medical conditions. Provide balanced recommendations including both pharmaceutical and lifestyle interventions when appropriate.",
+            "You are a wellness assistant helping to suggest evidence-based but accessible treatments for health conditions. Focus on over-the-counter remedies and lifestyle interventions that don't require prescriptions or medical supervision. Provide balanced recommendations prioritizing non-pharmaceutical approaches when appropriate.",
         },
         {
           role: "user",
