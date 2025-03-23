@@ -341,86 +341,96 @@ export default function TreatmentsPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Type</label>
-              <Select value={treatmentType} onValueChange={setTreatmentType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pharmaceutical">Medication</SelectItem>
-                  <SelectItem value="non-pharmaceutical">
-                    Lifestyle/Alternative
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Type</label>
+                <Select value={treatmentType} onValueChange={setTreatmentType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pharmaceutical">Medication</SelectItem>
+                    <SelectItem value="non-pharmaceutical">
+                      Lifestyle/Alternative
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Frequency
+                </label>
+                <Select value={frequency} onValueChange={setFrequency}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select frequency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Frequency
-              </label>
-              <Select value={frequency} onValueChange={setFrequency}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select frequency" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="daily">Daily</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button onClick={addTreatment} disabled={conditions.length === 0}>
+            <Button
+              onClick={addTreatment}
+              disabled={conditions.length === 0}
+              className="w-full sm:w-auto"
+            >
               Add Treatment
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Your Treatments</h2>
+      <div className="space-y-3">
+        {/* Separate heading for mobile */}
+        <h2 className="text-xl font-semibold border-b pb-2">Your Treatments</h2>
 
-          <div className="flex items-center space-x-2">
-            {/* Filter dropdown */}
-            <Select value={filterCondition} onValueChange={setFilterCondition}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by condition" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Conditions</SelectItem>
-                {conditions.map((condition) => (
-                  <SelectItem key={condition.id} value={condition.id}>
-                    {condition.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {/* Controls on their own row on mobile */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
+          {/* Filter dropdown - full width on mobile */}
+          <Select value={filterCondition} onValueChange={setFilterCondition}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Filter by condition" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Conditions</SelectItem>
+              {conditions.map((condition) => (
+                <SelectItem key={condition.id} value={condition.id}>
+                  {condition.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-            {/* View type toggle */}
-            <div className="border rounded-md flex">
-              <Button
-                variant={viewType === "list" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewType("list")}
-                className="rounded-r-none px-3"
-              >
-                <ListIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewType === "grouped" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewType("grouped")}
-                className="rounded-l-none px-3"
-              >
-                <GroupIcon className="h-4 w-4" />
-              </Button>
-            </div>
+          {/* View type toggle - centered on mobile */}
+          <div className="border rounded-md flex self-center sm:self-auto">
+            <Button
+              variant={viewType === "list" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewType("list")}
+              className="rounded-r-none px-3 h-9"
+            >
+              <ListIcon className="h-4 w-4 mr-1.5" />
+              <span className="sm:hidden">List</span>
+            </Button>
+            <Button
+              variant={viewType === "grouped" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewType("grouped")}
+              className="rounded-l-none px-3 h-9"
+            >
+              <GroupIcon className="h-4 w-4 mr-1.5" />
+              <span className="sm:hidden">Grouped</span>
+            </Button>
           </div>
         </div>
+      </div>
 
+      <div className="space-y-4">
         {loading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -450,15 +460,15 @@ export default function TreatmentsPage() {
                 className="hover:shadow-md transition-shadow"
               >
                 <CardContent className="pt-6">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:items-start">
                     <div
                       className="flex-1 cursor-pointer"
                       onClick={() => router.push(`/treatments/${treatment.id}`)}
                     >
-                      <h3 className="text-lg font-medium">
+                      <h3 className="text-lg font-medium flex flex-wrap items-center gap-2">
                         {treatment.name}
                         {treatment.effectiveness && (
-                          <span className="ml-2 text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                          <span className="text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
                             Rated: {treatment.effectiveness}/10
                           </span>
                         )}
@@ -470,10 +480,11 @@ export default function TreatmentsPage() {
                         • {treatment.frequency} • For: {treatment.conditionName}
                       </p>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex gap-2 mt-2 sm:mt-0">
                       <Button
                         variant="outline"
                         size="sm"
+                        className="flex-1 sm:flex-none h-9"
                         onClick={() =>
                           router.push(`/treatments/${treatment.id}`)
                         }
@@ -483,6 +494,7 @@ export default function TreatmentsPage() {
                       <Button
                         variant="destructive"
                         size="sm"
+                        className="flex-1 sm:flex-none h-9"
                         onClick={() => deleteTreatment(treatment.id)}
                       >
                         Delete
@@ -501,30 +513,45 @@ export default function TreatmentsPage() {
             {/* Pagination controls */}
             {filteredTreatments.length > treatmentsPerPage && (
               <div className="flex justify-center mt-6">
-                <div className="flex space-x-1">
+                <div className="flex flex-wrap justify-center gap-1">
                   <Button
                     variant="outline"
                     size="sm"
+                    className="h-9"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                   >
                     Previous
                   </Button>
-                  {Array.from({ length: pageCount }, (_, i) => i + 1).map(
-                    (page) => (
-                      <Button
-                        key={page}
-                        variant={currentPage === page ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </Button>
-                    )
-                  )}
+
+                  {/* Desktop pagination - show all pages */}
+                  <div className="hidden sm:flex space-x-1">
+                    {Array.from({ length: pageCount }, (_, i) => i + 1).map(
+                      (page) => (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          className="h-9"
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </Button>
+                      )
+                    )}
+                  </div>
+
+                  {/* Mobile pagination - just show current/total */}
+                  <div className="sm:hidden flex items-center px-3 h-9 border rounded-md">
+                    <span className="text-sm">
+                      Page {currentPage} of {pageCount}
+                    </span>
+                  </div>
+
                   <Button
                     variant="outline"
                     size="sm"
+                    className="h-9"
                     onClick={() =>
                       setCurrentPage((p) => Math.min(pageCount, p + 1))
                     }
@@ -552,7 +579,7 @@ export default function TreatmentsPage() {
                         ({treatments.length} treatments)
                       </span>
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {treatments.map((treatment) => (
                         <div
                           key={treatment.id}
@@ -562,8 +589,8 @@ export default function TreatmentsPage() {
                           }
                         >
                           <div className="flex justify-between items-start">
-                            <div>
-                              <div className="font-medium">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium truncate pr-2">
                                 {treatment.name}
                               </div>
                               <div className="text-sm text-muted-foreground">
@@ -573,11 +600,11 @@ export default function TreatmentsPage() {
                                 • {treatment.frequency}
                               </div>
                             </div>
-                            <div className="flex space-x-1">
+                            <div className="flex space-x-1 shrink-0">
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 w-7 p-0"
+                                className="h-8 w-8 p-0"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   router.push(`/treatments/${treatment.id}`);
@@ -588,7 +615,7 @@ export default function TreatmentsPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 w-7 p-0 hover:bg-red-100 hover:text-red-700"
+                                className="h-8 w-8 p-0 hover:bg-red-100 hover:text-red-700"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   deleteTreatment(treatment.id);
