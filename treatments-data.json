@@ -1,0 +1,290 @@
+[
+  {
+    "treatment_name": "Physical activity",
+    "condition_name": "diabetes",
+    "type": "non-pharmaceutical",
+    "description": "These include eating a healthy diet, staying at healthy weight, and getting regular physical activity",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Exercise",
+    "condition_name": "diabetes",
+    "type": "non-pharmaceutical",
+    "description": "If you have gestational  diabetes , you may be able to lower your glucose levels by eating a healthy diet and getting regular exercise",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Rest",
+    "condition_name": "diabetes",
+    "type": "non-pharmaceutical",
+    "description": "If you do, you will need to take insulin for \nthe rest of your life",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Rest",
+    "condition_name": "hypertension",
+    "type": "non-pharmaceutical",
+    "description": "When your heart is at rest, between beats, your blood pressure falls",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Exercise",
+    "condition_name": "hypertension",
+    "type": "non-pharmaceutical",
+    "description": "These changes, such as heart-healthy eating and exercise, can be very effective",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Physical activity",
+    "condition_name": "hypertension",
+    "type": "non-pharmaceutical",
+    "description": "The plan may include:   Healthy lifestyle changes, such as:\n    Healthy eating, which includes eating less salt  Regular physical activity, which may be done through pulmonary rehabilitation  \n  Medicines, such as:\n    Blood thinners  Medicines to control the rate blood is pumped throughout the body  Medicines to relax blood vessels and allow the blood to flow better  Medicine to reduce swelling (diuretics)  \n  Oxygen therapy  Procedures to reduce pressure in the heart or pulmonary artery  In some severe cases, a lung transplant   NIH: National Heart, Lung, and Blood Institute  What is pulmonary   hypertension  ?  Pulmonary   hypertension  , sometimes called PH, is a serious condition that affects the blood vessels in the lungs",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Diet",
+    "condition_name": "hypertension",
+    "type": "non-pharmaceutical",
+    "description": "This means:   Eating a healthy diet",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Stress management",
+    "condition_name": "hypertension",
+    "type": "non-pharmaceutical",
+    "description": "Stress management techniques include exercising, listening to music, focusing on something calm or peaceful, and meditating",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Aspirin",
+    "condition_name": "hypertension",
+    "type": "pharmaceutical",
+    "description": "Take aspirin in the second trimester, if you are at risk of preeclampsia and your provider recommends aspirin",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Calcium",
+    "condition_name": "hypertension",
+    "type": "pharmaceutical",
+    "description": "Calcium channel blockers prevent calcium from entering the muscle cells of your heart and blood vessels",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Exercise",
+    "condition_name": "asthma",
+    "type": "non-pharmaceutical",
+    "description": "They can include\n\t  Dust mites  Mold  Pets  Pollen from grass, trees, and weeds  Waste from pests such as cockroaches and mice  \n  Nonallergic  asthma  is caused by triggers that are not allergens, such as\n\t  Breathing in cold air  Certain medicines  Household chemicals  Infections such as colds and the flu  Outdoor air pollution  Tobacco smoke  \n  Occupational  asthma  is caused by breathing in chemicals or industrial dusts at work  Exercise-induced  asthma  happens during physical exercise, especially when the air is dry    Asthma  triggers may be different for each person and can change over time",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Physical activity",
+    "condition_name": "asthma",
+    "type": "non-pharmaceutical",
+    "description": "They can include:   Frequent coughing or a cough that produces a lot of mucus  Wheezing  A whistling or squeaky sound when you breathe  Shortness of breath, especially with physical activity  Tightness in your chest   Some people with COPD get frequent respiratory infections such as colds and the flu",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Oxygen therapy",
+    "condition_name": "asthma",
+    "type": "non-pharmaceutical",
+    "description": "Vaccines for the flu and pneumococcal pneumonia, since people with COPD are at higher risk for serious problems from these diseases  Antibiotics if you get a bacterial lung infection    Oxygen therapy, if you have severe COPD and low levels of oxygen in your blood",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Physical therapy",
+    "condition_name": "arthritis",
+    "type": "non-pharmaceutical",
+    "description": "Treatment can include medicines and physical therapy to help maintain movement and reduce swelling and pain",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Physical activity",
+    "condition_name": "migraine",
+    "type": "non-pharmaceutical",
+    "description": "These factors vary from person to person, and they include:   Stress  Anxiety  Hormonal changes in women  Bright or flashing lights  Loud noises  Strong smells  Medicines  Too much or not enough sleep  Sudden changes in weather or environment  Overexertion (too much physical activity)  Tobacco  Caffeine or caffeine withdrawal  Skipped meals  Medication overuse (taking medicine for  migraines  too often)   Some people have found that certain foods or ingredients can trigger headaches, especially when they are combined with other triggers",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Exercise",
+    "condition_name": "migraine",
+    "type": "non-pharmaceutical",
+    "description": "There are also other things you can do to feel better:   Resting with your eyes closed in a quiet, darkened room  Placing a cool cloth or ice pack on your forehead  Drinking fluids   There are some lifestyle changes you can make to prevent  migraines :   Stress management strategies, such as exercise, relaxation techniques, and biofeedback, may reduce the number and severity of  migraines",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Biofeedback",
+    "condition_name": "migraine",
+    "type": "non-pharmaceutical",
+    "description": "Biofeedback uses electronic devices to teach you to control certain body functions, such as your heartbeat, blood pressure, and muscle tension",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Therapy",
+    "condition_name": "migraine",
+    "type": "non-pharmaceutical",
+    "description": "Hormone therapy may help some women whose  migraines  seem to be linked to their menstrual cycle  If you have obesity, losing weight may also be helpful   If you have frequent or severe  migraines , you may need to take medicines to prevent further attacks",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Vitamin B2 (Riboflavin)",
+    "condition_name": "migraine",
+    "type": "pharmaceutical",
+    "description": "Certain natural treatments, such as riboflavin (vitamin B2) and coenzyme Q10, may help prevent  migraines",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Magnesium",
+    "condition_name": "migraine",
+    "type": "pharmaceutical",
+    "description": "If your magnesium level is low, you can try taking magnesium",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Calcium",
+    "condition_name": "migraine",
+    "type": "pharmaceutical",
+    "description": "It:   Stimulates your central nervous system, which can make you feel more awake and give you a boost of energy  Is a diuretic, meaning that it helps your body get rid of extra salt and water by urinating more  Increases the release of acid in your stomach, sometimes leading to an upset stomach or heartburn  May interfere with the absorption of calcium in the body  Increases your blood pressure   Within one hour of eating or drinking caffeine, it reaches its peak level in your blood",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Therapy",
+    "condition_name": "depression",
+    "type": "non-pharmaceutical",
+    "description": "Most treatments include medicines and/or psychotherapy (talk therapy):   Medicines such as antidepressants may help control your symptoms",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Exercise",
+    "condition_name": "depression",
+    "type": "non-pharmaceutical",
+    "description": "These can include:   Getting regular exercise  Having a consistent sleep schedule  Controlling stress   If you, or someone you love is depressed, see your provider or a mental health provider",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Counseling",
+    "condition_name": "depression",
+    "type": "non-pharmaceutical",
+    "description": "You may be asked about things such as:   Your thoughts and feelings  How you are doing at school  Any changes in your eating, sleeping, or energy level  Whether you are suicidal  Whether you use alcohol or drugs  How is  depression  in teens treated? Effective treatments for  depression  in teens include talk therapy, or a combination of talk therapy and medicines:  Talk therapy  Talk therapy, also called psychotherapy or counseling, can help you understand and manage your moods and feelings",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Melatonin",
+    "condition_name": "depression",
+    "type": "pharmaceutical",
+    "description": "Their bodies also make too much melatonin, a hormone that regulates sleep, and not enough vitamin D",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Therapy",
+    "condition_name": "anxiety",
+    "type": "non-pharmaceutical",
+    "description": "What are the treatments for  anxiety  disorders? The main treatments for  anxiety  disorders are psychotherapy (talk therapy), medicines, or both:   Psychotherapy can help you recognize and change troubling emotions, thoughts, and behaviors",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Counseling",
+    "condition_name": "anxiety",
+    "type": "non-pharmaceutical",
+    "description": "How is panic disorder diagnosed? To find out if you have panic disorder, your health care provider:   Will ask about your medical history and symptoms  May check if an unrelated physical problem is causing your symptoms, for example with:\n\t  A physical exam  Blood tests to check for thyroid problems and other possible conditions  Heart health tests  \n  May do a panic disorder test  May refer you to a mental health provider for the panic disorder test or other types of psychological evaluations  What are the treatments for panic disorder? Treatment for panic disorder usually includes one or more of the following:   Talk therapy, also called psychotherapy or counseling, which can help you understand your feelings",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Exercise",
+    "condition_name": "anxiety",
+    "type": "non-pharmaceutical",
+    "description": "It may include:   Avoiding alcohol  Reducing caffeine  Eating regular meals  Getting enough sleep  Getting regular exercise   Joining a support group may also be helpful",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Good sleep habits",
+    "condition_name": "insomnia",
+    "type": "non-pharmaceutical",
+    "description": "What are the treatments for  insomnia ? Treatments include lifestyle changes, counseling, and medicines:   Lifestyle changes, including good sleep habits, often help relieve acute (short-term)  insomnia",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Counseling",
+    "condition_name": "insomnia",
+    "type": "non-pharmaceutical",
+    "description": "A type of counseling called cognitive-behavioral therapy (CBT) can help relieve the anxiety linked to chronic (ongoing)  insomnia   Several medicines also can help relieve your  insomnia  and allow you to re-establish a regular sleep schedule   If your  insomnia  is the symptom or side effect of another problem, it's important to treat that problem (if possible)",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Calcium",
+    "condition_name": "insomnia",
+    "type": "pharmaceutical",
+    "description": "It:   Stimulates your central nervous system, which can make you feel more awake and give you a boost of energy  Is a diuretic, meaning that it helps your body get rid of extra salt and water by urinating more  Increases the release of acid in your stomach, sometimes leading to an upset stomach or heartburn  May interfere with the absorption of calcium in the body  Increases your blood pressure   Within one hour of eating or drinking caffeine, it reaches its peak level in your blood",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  },
+  {
+    "treatment_name": "Therapy",
+    "condition_name": "insomnia",
+    "type": "non-pharmaceutical",
+    "description": "To get more relief from depression, your provider may suggest combining two antidepressants, using another kind of medicine with an antidepressant, or adding talk therapy or other approaches to improve your mental health",
+    "frequency": "daily",
+    "evidence_level": "Moderate",
+    "source_url": "MedlinePlus"
+  }
+]
