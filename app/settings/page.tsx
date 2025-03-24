@@ -14,15 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import {
-  AlertCircle,
-  Bell,
-  Loader2,
-  Mail,
-  Phone,
-  Save,
-  User,
-} from "lucide-react";
+import { Bell, Loader2, Mail, Phone, Save, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -189,7 +181,7 @@ export default function SettingsPage() {
               <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
             </div>
             <p className="text-xs text-muted-foreground mt-1 pl-1">
-              For SMS reminders (coming soon)
+              For account verification and recovery
             </p>
           </div>
 
@@ -223,26 +215,27 @@ export default function SettingsPage() {
         <CardHeader className="bg-muted/30 pb-4">
           <CardTitle className="flex items-center text-lg">
             <Bell className="mr-2 h-4 w-4 text-primary" />
-            Reminder Preferences
+            Email Notifications
           </CardTitle>
           <CardDescription>
-            Set up personalized reminders for your treatments
+            Set up personalized email reminders for your treatments
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="py-8 flex flex-col items-center text-center space-y-4">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-              <AlertCircle className="h-6 w-6 text-primary" />
+              <Mail className="h-6 w-6 text-primary" />
             </div>
 
             <div className="max-w-md">
               <h3 className="text-lg font-medium mb-2">Coming Soon!</h3>
               <p className="text-muted-foreground">
-                Email and SMS reminders are currently in development.
+                Email reminders are currently in development.
               </p>
               <p className="text-sm text-muted-foreground mt-2">
-                You'll be able to set up daily, weekly, or monthly reminders for
-                your treatments, as well as receive treatment adherence reports.
+                You'll be able to set up daily, weekly, or monthly email
+                notifications for your treatments, as well as receive treatment
+                adherence reports and health summaries.
               </p>
             </div>
 

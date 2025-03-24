@@ -84,11 +84,6 @@ export default function Nav() {
       href: "/reports",
       icon: <FilePieChart className="h-4 w-4 mr-2" />,
     },
-    {
-      name: "Settings",
-      href: "/settings",
-      icon: <Settings className="h-4 w-4 mr-2" />,
-    },
   ];
 
   const NavLink = ({ item }: { item: (typeof navItems)[0] }) => (
