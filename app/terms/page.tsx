@@ -190,7 +190,7 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold mt-8 mb-4">Contact Us</h2>
           <p>If you have any questions about these Terms, please contact us:</p>
           <ul className="list-disc pl-6 mt-2 space-y-2">
-            <li>By email: mthteo@gmail.com</li>
+            <li>By email: holistichealthtracker@gmail.com</li>
           </ul>
         </div>
       </div>

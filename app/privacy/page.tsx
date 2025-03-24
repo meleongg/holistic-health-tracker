@@ -141,7 +141,7 @@ export default function PrivacyPolicy() {
             us:
           </p>
           <ul className="list-disc pl-6 mt-2 space-y-2">
-            <li>By email: mthteo@gmail.com</li>
+            <li>By email: holistichealthtracker@gmail.com</li>
           </ul>
         </div>
       </div>
