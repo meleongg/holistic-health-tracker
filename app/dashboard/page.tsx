@@ -62,7 +62,13 @@ export default function Dashboard() {
       }
     });
     return () => unsubscribe();
-  }, [router, selectedDate]);
+  }, [router, selectedDate]); // Keep these dependencies
+
+  // Add a separate effect to update UI when completions change
+  useEffect(() => {
+    // Force re-evaluation of filtered treatments when completions change
+    setCurrentPage(1); // Reset to first page when treatments visibility changes
+  }, [completions, periodCompletions]);
 
   const fetchTreatments = async (userId: string) => {
     // Existing fetchTreatments function
@@ -137,9 +143,10 @@ export default function Dashboard() {
       return true;
     }
 
-    // Daily treatments always show
+    // For daily treatments, hide if completed today
     if (treatment.frequency === "daily") {
-      return true;
+      // Check if completed for selected date
+      return !isCompleted(treatment.id);
     }
 
     // For weekly treatments
@@ -306,6 +313,20 @@ export default function Dashboard() {
     return Array.from(uniqueConditions.values());
   }, [treatments]);
 
+  // Add this function near your other filtering/sorting functions
+  const getFrequencyPriority = (frequency: string) => {
+    switch (frequency) {
+      case "daily":
+        return 1;
+      case "weekly":
+        return 2;
+      case "monthly":
+        return 3;
+      default:
+        return 4;
+    }
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -313,8 +334,15 @@ export default function Dashboard() {
   // Filter treatments based on frequency and completion status
   const filteredTreatments = treatments.filter(shouldShowTreatment);
 
-  // Filter treatments based on type and condition
-  const displayedTreatments = filteredTreatments.filter((treatment) => {
+  // Add this sorting - sort by frequency priority
+  const sortedFilteredTreatments = [...filteredTreatments].sort((a, b) => {
+    return (
+      getFrequencyPriority(a.frequency) - getFrequencyPriority(b.frequency)
+    );
+  });
+
+  // Then use sortedFilteredTreatments in your subsequent filters
+  const displayedTreatments = sortedFilteredTreatments.filter((treatment) => {
     if (filterType !== "all" && treatment.type !== filterType) {
       return false;
     }
@@ -352,16 +380,24 @@ export default function Dashboard() {
                 className="rounded-md border mx-auto"
               />
 
-              {/* Add view toggle */}
+              {/* Update the toggle label to be more explicit */}
               <div className="flex items-center space-x-2 mt-4 px-2 sm:px-0">
                 <Switch
                   checked={showAllTreatments}
                   onCheckedChange={setShowAllTreatments}
                   id="show-all"
                 />
-                <label htmlFor="show-all" className="text-sm cursor-pointer">
-                  Show all treatments
-                </label>
+                <div>
+                  <label
+                    htmlFor="show-all"
+                    className="text-sm font-medium cursor-pointer"
+                  >
+                    Show all treatments
+                  </label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Including completed treatments for today, week, or month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -470,12 +506,34 @@ export default function Dashboard() {
                             </div>
 
                             <div className="flex-1 min-w-0">
+                              {/* Enhanced responsive badge with clearer frequency indicators */}
                               <div className="flex flex-wrap items-center gap-2 mb-0.5">
                                 <h3 className="font-medium truncate">
                                   {treatment.name}
                                 </h3>
-                                <Badge variant="outline" className="text-xs">
-                                  {treatment.frequency}
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs flex items-center whitespace-nowrap"
+                                >
+                                  <span>{treatment.frequency}</span>
+                                  {treatment.frequency === "daily" && (
+                                    <span className="ml-1.5 flex items-center text-green-600">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-green-500 inline-block"></span>
+                                    </span>
+                                  )}
+                                  {treatment.frequency === "weekly" && (
+                                    <span className="ml-1.5 flex items-center space-x-0.5 text-blue-600">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 inline-block"></span>
+                                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 inline-block"></span>
+                                    </span>
+                                  )}
+                                  {treatment.frequency === "monthly" && (
+                                    <span className="ml-1.5 flex items-center space-x-0.5 text-purple-600">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500 inline-block"></span>
+                                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500 inline-block"></span>
+                                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500 inline-block"></span>
+                                    </span>
+                                  )}
                                 </Badge>
                               </div>
 
