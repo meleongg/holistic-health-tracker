@@ -1,23 +1,33 @@
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
-// Initialize OpenAI client with the correct environment variable name
+// Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_API_KEY,
 });
 
-// Simple in-memory cache (will reset on server restart)
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Simple in-memory cache
 const CACHE = new Map<string, { data: any; timestamp: number }>();
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+// Create embeddings
+const embeddings = new OpenAIEmbeddings({
+  openAIApiKey: process.env.OPEN_AI_API_KEY,
+});
 
 export async function POST(request: Request) {
   try {
     const { conditionName, description } = await request.json();
-
-    // Create a cache key based on the condition name and description
     const cacheKey = `${conditionName}-${description || ""}`;
 
-    // Check if we have a valid cached response
+    // Check cache
     const cachedResponse = CACHE.get(cacheKey);
     if (cachedResponse && Date.now() - cachedResponse.timestamp < CACHE_TTL) {
       return NextResponse.json({
@@ -26,7 +36,43 @@ export async function POST(request: Request) {
       });
     }
 
-    // Update the prompt section to specify OTC and non-pharmaceutical only
+    // Generate an embedding for the condition query
+    const query = `${conditionName} ${description || ""}`.trim();
+    const queryEmbedding = await embeddings.embedQuery(query);
+
+    // Retrieve relevant treatment information
+    const { data: relevantTreatments, error } = await supabase.rpc(
+      "match_treatments",
+      {
+        query_embedding: queryEmbedding,
+        match_threshold: 0.7,
+        match_count: 10,
+      }
+    );
+
+    if (error) {
+      console.error("Error retrieving treatment information:", error);
+      return NextResponse.json(
+        { error: "Failed to retrieve treatment information", suggestions: [] },
+        { status: 500 }
+      );
+    }
+
+    // Format retrieved information as context
+    let contextInformation = "";
+    if (relevantTreatments && relevantTreatments.length > 0) {
+      contextInformation = `
+        Relevant medical context for ${conditionName}:
+        ${relevantTreatments
+          .map(
+            (t: any) =>
+              `- ${t.treatment_name}: ${t.description} Type: ${t.type}. Frequency: ${t.frequency}. Evidence level: ${t.evidence_level}.`
+          )
+          .join("\n")}
+      `;
+    }
+
+    // Create augmented prompt with the context
     const prompt = `
       Generate 5 evidence-based treatment options for the medical condition: ${conditionName}.
       ${
@@ -34,11 +80,14 @@ export async function POST(request: Request) {
           ? `Additional context about the condition: ${description}`
           : ""
       }
+      
+      ${contextInformation}
 
       IMPORTANT RESTRICTIONS:
       - Only include over-the-counter (OTC) medications that don't require a prescription
       - Include non-pharmaceutical lifestyle interventions (diet, exercise, etc.)
       - DO NOT include any prescription medications or treatments that require medical supervision
+      - Base your recommendations on the provided medical context when relevant
 
       For each treatment, provide:
       1. A specific name (OTC medication or lifestyle intervention)
@@ -51,6 +100,7 @@ export async function POST(request: Request) {
       Only include treatments that are well-established, evidence-based, and accessible without a prescription.
     `;
 
+    // Use OpenAI with the enhanced prompt
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -67,19 +117,32 @@ export async function POST(request: Request) {
       response_format: { type: "json_object" },
     });
 
-    // Parse the AI response
+    // Process the response
     try {
       const aiResponseText = response.choices[0].message.content || "{}";
       const aiResponse = JSON.parse(aiResponseText);
+      const suggestions = aiResponse.suggestions || [];
 
-      // Check each possible field name the AI might use
-      const suggestions =
-        aiResponse.suggestions ||
-        aiResponse.treatment_options ||
-        aiResponse.treatments ||
-        [];
+      // Add source information when available
+      suggestions.forEach((suggestion: any) => {
+        // Find if there's a matching source
+        const matchedTreatment = relevantTreatments?.find(
+          (t: any) =>
+            t.treatment_name
+              .toLowerCase()
+              .includes(suggestion.name.toLowerCase()) ||
+            suggestion.name
+              .toLowerCase()
+              .includes(t.treatment_name.toLowerCase())
+        );
 
-      // Store in cache
+        if (matchedTreatment) {
+          suggestion.evidence_level = matchedTreatment.evidence_level;
+          suggestion.source = "MedlinePlus";
+        }
+      });
+
+      // Cache the result
       CACHE.set(cacheKey, {
         data: { suggestions },
         timestamp: Date.now(),
@@ -92,23 +155,6 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     console.error("Error generating treatment suggestions:", error);
-
-    // Check for rate limiting errors - with proper typing
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "status" in error &&
-      error.status === 429
-    ) {
-      return NextResponse.json(
-        {
-          error: "The AI service is currently busy. Please try again later.",
-          suggestions: [],
-        },
-        { status: 429 }
-      );
-    }
-
     return NextResponse.json(
       { error: "Failed to generate treatment suggestions", suggestions: [] },
       { status: 500 }
