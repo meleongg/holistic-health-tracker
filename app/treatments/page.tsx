@@ -283,12 +283,13 @@ export default function TreatmentsPage() {
 
                 {!loadingSuggestions && suggestions.length > 0 ? (
                   <>
-                    <ScrollArea className="h-[180px] pr-4">
-                      <div className="space-y-3">
+                    {/* Responsive height based on screen size */}
+                    <ScrollArea className="h-[220px] sm:h-[280px] pr-4">
+                      <div className="space-y-3 sm:space-y-4">
                         {suggestions.map((suggestion, index) => (
                           <div
                             key={index}
-                            className="border bg-white rounded-md p-3 cursor-pointer hover:bg-slate-100 transition-colors"
+                            className="border bg-white rounded-md p-3 sm:p-4 cursor-pointer hover:bg-slate-50 hover:border-slate-300 transition-colors"
                             onClick={() => {
                               setTreatmentName(suggestion.name);
                               setTreatmentType(suggestion.type);
@@ -298,34 +299,50 @@ export default function TreatmentsPage() {
                               );
                             }}
                           >
-                            <div className="font-medium">{suggestion.name}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {suggestion.type === "pharmaceutical"
-                                ? "Medication"
-                                : "Lifestyle"}{" "}
-                              • {suggestion.frequency}
+                            <div className="font-medium text-sm sm:text-base">
+                              {suggestion.name}
                             </div>
-                            <p className="text-sm mt-1">
+
+                            {/* Ensures proper wrapping on small screens */}
+                            <div className="text-xs sm:text-sm text-muted-foreground mt-1 flex flex-wrap items-center gap-y-1">
+                              <span
+                                className={`${
+                                  suggestion.type === "pharmaceutical"
+                                    ? "text-blue-600"
+                                    : "text-green-600"
+                                } font-medium`}
+                              >
+                                {suggestion.type === "pharmaceutical"
+                                  ? "Medication"
+                                  : "Lifestyle"}
+                              </span>
+                              <span className="mx-1.5">•</span>
+                              <span>{suggestion.frequency}</span>
+                            </div>
+
+                            <p className="text-xs sm:text-sm mt-2 sm:mt-3 text-slate-700 leading-relaxed">
                               {suggestion.description}
                             </p>
-                            {suggestion.evidence_level && (
-                              <div className="mt-2.5 mb-2.5 flex items-center">
+
+                            <div className="flex flex-wrap items-center mt-2 sm:mt-3 gap-2">
+                              {suggestion.evidence_level && (
                                 <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium">
                                   Evidence: {suggestion.evidence_level}
                                 </span>
-                              </div>
-                            )}
-                            {suggestion.source && (
-                              <div className="text-xs text-muted-foreground mt-1">
-                                Source: {suggestion.source}
-                              </div>
-                            )}
+                              )}
+
+                              {suggestion.source && (
+                                <span className="text-xs text-muted-foreground">
+                                  Source: {suggestion.source}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
                     </ScrollArea>
 
-                    {/* Add attribution and disclaimer below suggestions */}
+                    {/* Keep the attribution and disclaimer */}
                     <div className="mt-3 pt-2 border-t text-xs text-muted-foreground">
                       <div className="mb-2">
                         Some treatment information sourced from{" "}
@@ -359,9 +376,8 @@ export default function TreatmentsPage() {
                           <line x1="12" y1="16" x2="12.01" y2="16" />
                         </svg>
                         <span>
-                          <strong>Medical Disclaimer:</strong> Suggestions
-                          limited to over-the-counter medications and
-                          non-pharmaceutical treatments only. Our database
+                          Suggestions limited to over-the-counter medications
+                          and non-pharmaceutical treatments only. Our database
                           doesn't cover all possible medical conditions or
                           treatments. Always consult with a healthcare
                           professional before following any recommendations.
