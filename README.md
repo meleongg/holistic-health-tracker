@@ -1,6 +1,6 @@
 # Holistic Health Tracker
 
-A comprehensive AI-powered health treatment management application built during Nuggethacks, an 8-hour internal club hackathon with nwPlus!
+A comprehensive AI-powered health treatment management application built during Nuggethacks, an 8-hour internal club hackathon!
 
 ## 🔍 The Problem We're Solving
 
