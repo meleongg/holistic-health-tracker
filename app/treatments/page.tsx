@@ -298,24 +298,75 @@ export default function TreatmentsPage() {
                               );
                             }}
                           >
-                            {/* Existing suggestion content */}
+                            <div className="font-medium">{suggestion.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {suggestion.type === "pharmaceutical"
+                                ? "Medication"
+                                : "Lifestyle"}{" "}
+                              • {suggestion.frequency}
+                            </div>
+                            <p className="text-sm mt-1">
+                              {suggestion.description}
+                            </p>
+                            {suggestion.evidence_level && (
+                              <div className="mt-2.5 mb-2.5 flex items-center">
+                                <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                                  Evidence: {suggestion.evidence_level}
+                                </span>
+                              </div>
+                            )}
+                            {suggestion.source && (
+                              <div className="text-xs text-muted-foreground mt-1">
+                                Source: {suggestion.source}
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
                     </ScrollArea>
 
-                    {/* Add attribution below suggestions */}
+                    {/* Add attribution and disclaimer below suggestions */}
                     <div className="mt-3 pt-2 border-t text-xs text-muted-foreground">
-                      Treatment information sourced from{" "}
-                      <a
-                        href="https://medlineplus.gov"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        MedlinePlus.gov
-                      </a>
-                      , a service of the National Library of Medicine (NLM).
+                      <div className="mb-2">
+                        Some treatment information sourced from{" "}
+                        <a
+                          href="https://medlineplus.gov"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          MedlinePlus.gov
+                        </a>
+                        , a service of the National Library of Medicine (NLM).
+                      </div>
+
+                      {/* Medical disclaimer */}
+                      <div className="mt-2 pt-2 border-t flex items-start">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mr-1 mt-0.5 text-amber-500"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span>
+                          <strong>Medical Disclaimer:</strong> Suggestions
+                          limited to over-the-counter medications and
+                          non-pharmaceutical treatments only. Our database
+                          doesn't cover all possible medical conditions or
+                          treatments. Always consult with a healthcare
+                          professional before following any recommendations.
+                        </span>
+                      </div>
                     </div>
                   </>
                 ) : !loadingSuggestions ? (

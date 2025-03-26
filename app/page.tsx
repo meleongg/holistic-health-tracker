@@ -28,13 +28,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react"; // Add useRef import
 import { toast } from "sonner";
 
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("signin");
+  const authFormRef = useRef<HTMLDivElement>(null); // Add ref for auth form
 
   // Sign-in form state
   const [signinEmail, setSigninEmail] = useState("");
@@ -129,6 +130,18 @@ export default function Home() {
     }
   };
 
+  // Function to set active tab AND scroll to form
+  const handleTabChange = (tab: "signin" | "signup") => {
+    setActiveTab(tab);
+    // Smooth scroll to auth form
+    if (authFormRef.current) {
+      authFormRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
+
   // Show loading state while checking auth
   if (loading) {
     return (
@@ -160,14 +173,14 @@ export default function Home() {
               variant="ghost"
               size="sm"
               className="text-sm hidden sm:flex"
-              onClick={() => setActiveTab("signin")}
+              onClick={() => handleTabChange("signin")} // Changed from setActiveTab
             >
               Sign In
             </Button>
             <Button
               size="sm"
               className="text-sm"
-              onClick={() => setActiveTab("signup")}
+              onClick={() => handleTabChange("signup")} // Changed from setActiveTab
             >
               Get Started
             </Button>
@@ -182,11 +195,11 @@ export default function Home() {
           <div className="max-w-xl mx-auto lg:mx-0 lg:ml-auto">
             <div className="py-10 lg:py-20">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
-                Track Your Health Journey, Holistically
+                Track Your Health Journey with AI-Powered Recommendations
               </h1>
               <p className="text-lg sm:text-xl mb-6 sm:mb-8 text-indigo-100 leading-relaxed max-w-lg">
-                Manage all your health treatments in one place—from
-                prescriptions and therapies to diet changes and exercises.
+                Manage all your health treatments in one place—with smart,
+                evidence-based recommendations from trusted medical databases.
               </p>
             </div>
 
@@ -234,12 +247,31 @@ export default function Home() {
                   </p>
                 </div>
               </div>
+
+              <div className="flex items-start">
+                <div className="bg-white/10 p-3 rounded-full mr-4 shrink-0">
+                  <CheckCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-1">
+                    AI-Powered Recommendations
+                  </h3>
+                  <p className="text-indigo-100 text-sm sm:text-base">
+                    Get evidence-based suggestions for both over the counter
+                    medications and often-overlooked lifestyle treatments
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Right side - Auth Forms */}
-        <div className="lg:flex-1 p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-gray-50">
+        <div
+          className="lg:flex-1 p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-gray-50"
+          ref={authFormRef}
+        >
+          {/* Add ref here */}
           <div className="w-full max-w-md mx-auto">
             <Tabs
               value={activeTab}
@@ -457,7 +489,7 @@ export default function Home() {
             <Button
               size="lg"
               className="group"
-              onClick={() => setActiveTab("signup")}
+              onClick={() => handleTabChange("signup")} // Changed from setActiveTab
             >
               Start Your Health Journey
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -501,6 +533,11 @@ export default function Home() {
                 answer:
                   "Yes, you can generate and download reports of your health conditions, treatments, and effectiveness ratings to share with your healthcare providers.",
               },
+              {
+                question: "How do the AI treatment recommendations work?",
+                answer:
+                  "Our system uses Retrieval Augmented Generation (RAG) technology to search through trusted medical information from MedlinePlus. It matches your specific conditions with relevant treatments, providing evidence-based recommendations that you can discuss with your healthcare provider. Important: We only suggest over-the-counter medications and non-pharmaceutical treatments. Please note that our database doesn't cover all possible medical conditions or treatments, and all recommendations should be verified with a qualified medical professional before use.",
+              },
             ].map((faq, i) => (
               <div key={i} className="border rounded-lg overflow-hidden">
                 <button
@@ -532,17 +569,17 @@ export default function Home() {
       <div className="bg-gradient-to-r from-primary/90 to-indigo-600 text-white py-16 px-6 sm:px-8 lg:px-12">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-            Start Your Health Journey Today
+            Get Smart, Evidence-Based Treatment Recommendations Today
           </h2>
           <p className="text-indigo-100 mb-8 max-w-2xl mx-auto">
-            Take control of your health with comprehensive tracking and
-            insightful analytics.
+            Take control of your health with AI-powered suggestions from trusted
+            medical sources.
           </p>
           <Button
             size="lg"
             variant="secondary"
             className="font-semibold"
-            onClick={() => setActiveTab("signup")}
+            onClick={() => handleTabChange("signup")} // Changed from setActiveTab
           >
             Create Your Free Account
           </Button>
@@ -620,6 +657,11 @@ export default function Home() {
               </a>
               , a service of the National Library of Medicine (NLM).
             </p>
+            <p className="mt-2">
+              Treatment suggestions are limited to over-the-counter options and
+              lifestyle changes. All recommendations should be verified with a
+              healthcare professional.
+            </p>
           </div>
           <div className="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
             <p>
@@ -632,7 +674,7 @@ export default function Home() {
 
       {/* Mobile Sign Up Prompt */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-4 flex justify-center z-20">
-        <Button className="w-full" onClick={() => setActiveTab("signup")}>
+        <Button className="w-full" onClick={() => handleTabChange("signup")}>
           Get Started
         </Button>
       </div>
