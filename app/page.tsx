@@ -607,7 +607,21 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
+          <div className="mt-8 text-sm text-slate-200 text-center">
+            <p className="mb-2">
+              This application uses health information from{" "}
+              <a
+                href="https://medlineplus.gov"
+                className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                MedlinePlus.gov
+              </a>
+              , a service of the National Library of Medicine (NLM).
+            </p>
+          </div>
+          <div className="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
             <p>
               © {new Date().getFullYear()} Holistic Health Tracker. All rights
               reserved.

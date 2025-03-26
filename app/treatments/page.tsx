@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -283,45 +282,42 @@ export default function TreatmentsPage() {
                 </div>
 
                 {!loadingSuggestions && suggestions.length > 0 ? (
-                  <ScrollArea className="h-[180px] pr-4">
-                    <div className="space-y-3">
-                      {suggestions.map((suggestion, index) => (
-                        <div
-                          key={index}
-                          className="border bg-white rounded-md p-3 cursor-pointer hover:bg-slate-100 transition-colors"
-                          onClick={() => {
-                            setTreatmentName(suggestion.name);
-                            setTreatmentType(suggestion.type);
-                            setFrequency(suggestion.frequency);
-                            toast.success(`Added "${suggestion.name}" to form`);
-                          }}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="font-medium">
-                                {suggestion.name}
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                {suggestion.type === "pharmaceutical"
-                                  ? "Medication"
-                                  : "Lifestyle"}{" "}
-                                {" • "}
-                                {suggestion.frequency}
-                              </div>
-                            </div>
-                            <Badge variant="outline" className="ml-2">
-                              Use
-                            </Badge>
+                  <>
+                    <ScrollArea className="h-[180px] pr-4">
+                      <div className="space-y-3">
+                        {suggestions.map((suggestion, index) => (
+                          <div
+                            key={index}
+                            className="border bg-white rounded-md p-3 cursor-pointer hover:bg-slate-100 transition-colors"
+                            onClick={() => {
+                              setTreatmentName(suggestion.name);
+                              setTreatmentType(suggestion.type);
+                              setFrequency(suggestion.frequency);
+                              toast.success(
+                                `Added "${suggestion.name}" to form`
+                              );
+                            }}
+                          >
+                            {/* Existing suggestion content */}
                           </div>
-                          {suggestion.description && (
-                            <p className="text-xs mt-2 text-muted-foreground">
-                              {suggestion.description}
-                            </p>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    </ScrollArea>
+
+                    {/* Add attribution below suggestions */}
+                    <div className="mt-3 pt-2 border-t text-xs text-muted-foreground">
+                      Treatment information sourced from{" "}
+                      <a
+                        href="https://medlineplus.gov"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        MedlinePlus.gov
+                      </a>
+                      , a service of the National Library of Medicine (NLM).
                     </div>
-                  </ScrollArea>
+                  </>
                 ) : !loadingSuggestions ? (
                   <p className="text-sm text-muted-foreground">
                     Select a condition to see AI-suggested treatments
