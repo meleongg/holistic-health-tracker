@@ -39,14 +39,15 @@ export default function Nav() {
     return () => unsubscribe();
   }, []);
 
+  // Add this useEffect for navigation instead of doing it during render
+  useEffect(() => {
+    if (pathname === "/" && user) {
+      router.replace("/dashboard");
+    }
+  }, [pathname, user, router]);
+
   // Don't show navbar on login page
   if (pathname === "/" && !user) {
-    return null;
-  }
-
-  // If on home page but authenticated, redirect to dashboard
-  if (pathname === "/" && user) {
-    router.replace("/dashboard");
     return null;
   }
 
