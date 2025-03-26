@@ -671,13 +671,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Mobile Sign Up Prompt */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-4 flex justify-center z-20">
-        <Button className="w-full" onClick={() => handleTabChange("signup")}>
-          Get Started
-        </Button>
-      </div>
     </main>
   );
 }
