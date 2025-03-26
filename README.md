@@ -2,6 +2,10 @@
 
 A comprehensive health treatment management application built during Nuggethacks, a 6-hour internal hackathon, enhanced with AI-powered treatment recommendations!
 
+## 🔍 The Problem We're Solving
+
+Healthcare adherence is notably imbalanced: patients typically adhere to pharmaceutical treatments while often neglecting equally important lifestyle and non-pharmaceutical recommendations. This creates a significant gap in treatment effectiveness, as holistic health management requires both medication adherence and lifestyle modifications. Medical professionals struggle to ensure patients follow complete treatment plans, especially the non-pharmaceutical components that can be crucial for long-term health outcomes.
+
 ## 🌟 Features
 
 - **Treatment Management**: Track pharmaceutical and lifestyle treatments for multiple health conditions
