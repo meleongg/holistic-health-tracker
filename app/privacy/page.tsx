@@ -134,15 +134,6 @@ export default function PrivacyPolicy() {
             changes. Changes to this Privacy Policy are effective when they are
             posted on this page.
           </p>
-
-          <h2 className="text-xl font-semibold mt-8 mb-4">Contact Us</h2>
-          <p>
-            If you have any questions about this Privacy Policy, please contact
-            us:
-          </p>
-          <ul className="list-disc pl-6 mt-2 space-y-2">
-            <li>By email: holistichealthtracker@gmail.com</li>
-          </ul>
         </div>
       </div>
 
